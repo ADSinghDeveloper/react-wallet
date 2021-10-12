@@ -1,9 +1,7 @@
 import React, { useReducer, useContext, useState } from "react";
 import { Card, Col, Form, Row, Button } from "react-bootstrap";
 import AuthContext from "../../store/auth-context";
-
-const emailValidRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
-// const pswStrengthRegex = (?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,});
+import validateEMail from "../../helper/helper";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -11,7 +9,7 @@ const formReducer = (state, action) => {
       state = {
         ...state,
         name: {
-          val: action.value,
+          value: action.value,
           isValid: action.value.trim().length > 2,
         },
       };
@@ -20,9 +18,9 @@ const formReducer = (state, action) => {
       state = {
         ...state,
         email: {
-          val: action.value,
-          isValid: emailValidRegex.test(action.value),
-          isExists: emailValidRegex.test(action.value) && action.isEmailExists(action.value),
+          value: action.value,
+          isValid: validateEMail(action.value),
+          isExists: validateEMail(action.value) && action.isEmailExists(action.value),
         },
       };
       break;
@@ -30,7 +28,7 @@ const formReducer = (state, action) => {
       state = {
         ...state,
         password: {
-          val: action.value.trim(),
+          value: action.value.trim(),
           isValid: action.value.trim().length > 7,
         },
       };
@@ -39,10 +37,10 @@ const formReducer = (state, action) => {
       state = {
         ...state,
         cpassword: {
-          val: action.value,
+          value: action.value,
           isValid:
             state.password.isValid === true &&
-            state.password.val === action.value,
+            state.password.value === action.value,
         },
       };
       break;
@@ -62,10 +60,10 @@ const formReducer = (state, action) => {
 
 const Register = () => {
   const [formState, formDispatcher] = useReducer(formReducer, {
-    name: { val: "", isValid: null },
-    email: { val: "", isValid: null, isExists: null },
-    password: { val: "", isValid: null },
-    cpassword: { val: "", isValid: null },
+    name: { value: "", isValid: null },
+    email: { value: "", isValid: null, isExists: null },
+    password: { value: "", isValid: null },
+    cpassword: { value: "", isValid: null },
     isValid: false,
   });
 
@@ -90,13 +88,13 @@ const Register = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    formDispatcher({ type: "NAME_VALIDATION", value: formState.name.val });
-    formDispatcher({ type: "EMAIL_VALIDATION", value: formState.email.val, isEmailExists: authCtx.isEmailExists });
-    formDispatcher({ type: "PSW_VALIDATION", value: formState.password.val });
-    formDispatcher({ type: "CPSW_VALIDATION", value: formState.cpassword.val });
-    console.log(formState);
+    formDispatcher({ type: "NAME_VALIDATION", value: formState.name.value });
+    formDispatcher({ type: "EMAIL_VALIDATION", value: formState.email.value, isEmailExists: authCtx.isEmailExists });
+    formDispatcher({ type: "PSW_VALIDATION", value: formState.password.value });
+    formDispatcher({ type: "CPSW_VALIDATION", value: formState.cpassword.value });
+    // console.log(formState);
     if (formState.isValid) {
-      let regData = {name: formState.name.val, email: formState.email.val, password: formState.password.val};
+      let regData = {name: formState.name.value, email: formState.email.value, password: formState.password.value};
       authCtx.register(regData);
       setRegSuccess(true);
     }
@@ -115,7 +113,7 @@ const Register = () => {
               <Form.Group className="mb-2 form-floating" controlId="name">
                 <Form.Control
                   placeholder="Enter Your Name"
-                  value={formState.name.val}
+                  value={formState.name.value}
                   onChange={nameHandler}
                   onBlur={nameHandler}
                   className={
@@ -132,7 +130,7 @@ const Register = () => {
                 <Form.Control
                   type="email"
                   placeholder="Enter Email"
-                  value={formState.email.val}
+                  value={formState.email.value}
                   className={
                     formState.email.isValid != null
                       ? formState.email.isValid && !formState.email.isExists
@@ -150,7 +148,7 @@ const Register = () => {
                 <Form.Control
                   type="password"
                   placeholder="Password"
-                  value={formState.password.val}
+                  value={formState.password.value}
                   className={
                     formState.password.isValid != null
                       ? formState.password.isValid
@@ -170,7 +168,7 @@ const Register = () => {
                 <Form.Control
                   type="password"
                   placeholder="Confirm Password"
-                  value={formState.cpassword.val}
+                  value={formState.cpassword.value}
                   className={
                     formState.cpassword.isValid != null
                       ? formState.cpassword.isValid

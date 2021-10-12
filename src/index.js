@@ -1,18 +1,31 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
+import React from "react";
+import ReactDOM from "react-dom";
 
 import "bootstrap/dist/css/bootstrap.css";
-import './index.css';
+import "./index.css";
 
-import App from './App';
-import reportWebVitals from './reportWebVitals';
+import App from "./App";
+import { AuthContextProvider } from "./store/auth-context";
+import reportWebVitals from "./reportWebVitals";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <AuthContextProvider>
+      <App />
+    </AuthContextProvider>
   </React.StrictMode>,
-  document.getElementById('root')
+  document.getElementById("root")
 );
+
+/*
+useReducer, useState, useContext, useEffect
+export default React.memo(<Component />); // to prevent useless running but it costs to check props changes and comparission to React !important, then need to use useCallback(()=>{}, []) "[] is for dependencies like useEffect"
+findIndex()
+filter()
+reduce()
+map()
+includes()
+*/
 
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
