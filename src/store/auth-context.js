@@ -2,7 +2,7 @@ import React, { useState } from "react";
 
 const AuthContext = React.createContext({
   isLoggedIn: false,
-  loggedInUser: {},
+  loggedInUser: {name: '', email: ''},
   login: () => {},
   logout: () => {},
   register: (regData) => {},
@@ -11,6 +11,7 @@ const AuthContext = React.createContext({
 
 export const AuthContextProvider = (props) => {
   const [isLogin, setIsLogin] = useState(false);
+  const [loggedInUser, setLoggedInUser] = useState('');
   const lsUserIndex = "rwUsers";
 
   if (!localStorage.hasOwnProperty(lsUserIndex)) {
@@ -27,13 +28,13 @@ export const AuthContextProvider = (props) => {
 
     if (indexFound >= 0) {
       setIsLogin((prevState) => !prevState);
+      setLoggedInUser(rwUsersData[indexFound]);
+      return true;
     }else{
-      console.error("Wrong Password");  
+      console.error("Wrong Password");
+      return false;
     }
   };
-
-  const getLoggedInUser = () => {
-  }
 
   const logoutHandler = () => {
     setIsLogin((prevState) => !prevState);
@@ -58,7 +59,7 @@ export const AuthContextProvider = (props) => {
 
   const authCtx = {
     isLoggedIn: isLogin,
-    loggedInUser: getLoggedInUser,
+    loggedInUser: loggedInUser,
     login: loginHandler,
     logout: logoutHandler,
     register: registerHandler,

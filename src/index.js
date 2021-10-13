@@ -17,16 +17,6 @@ ReactDOM.render(
   document.getElementById("root")
 );
 
-/*
-useReducer, useState, useContext, useEffect
-export default React.memo(<Component />); // to prevent useless running but it costs to check props changes and comparission to React !important, then need to use useCallback(()=>{}, []) "[] is for dependencies like useEffect"
-findIndex()
-filter()
-reduce()
-map()
-includes()
-*/
-
 // If you want to start measuring performance in your app, pass a function
 // to log results (for example: reportWebVitals(console.log))
 // or send to an analytics endpoint. Learn more: https://bit.ly/CRA-vitals

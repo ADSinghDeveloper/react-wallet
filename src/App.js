@@ -13,13 +13,14 @@ function App() {
       {authCtx.isLoggedIn === false && <Login />}
       {authCtx.isLoggedIn === true && (
         <div className="text-success">
-          LoggedIn Successfully!
+          Welcome {authCtx.loggedInUser.name}!
           <Button variant="primary" onClick={authCtx.logout}>
             Logout
-          </Button>
+          </Button><br />You have been LoggedIn Successfully!
         </div>
       )}
-      {/* {authCtx.isLoggedIn === false && <Register />} */}
+      {/* <div className="justify-content-md-center row">OR</div>
+      {authCtx.isLoggedIn === false && <Register />} */}
     </Container>
   );
 }

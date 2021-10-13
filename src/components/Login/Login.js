@@ -1,4 +1,4 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer, useContext, useState } from "react";
 import { Card, Col, Form, Row, Button } from "react-bootstrap";
 import AuthContext from "../../store/auth-context";
 import validateEMail from "../../helper/helper";
@@ -43,8 +43,14 @@ const Login = () => {
     isValid: false,
   });
   const authCtx = useContext(AuthContext);
+  const [loginResponse, setLoginResponse] = useState(null);
+
+  const clearLoginError = () => {
+    setLoginResponse(null);
+  }
 
   const emailFieldHandler = (event) => {
+    clearLoginError();
     formDispatcher({
       type: "EMAIL_VALIDATION",
       value: event.target.value,
@@ -53,17 +59,19 @@ const Login = () => {
   };
 
   const passwordFieldHandler = (event) => {
+    clearLoginError();
     formDispatcher({ type: "PSW_VALIDATION", value: event.target.value });
   };
 
   const submitHandler = (event) => {
+    setLoginResponse(null);
     event.preventDefault();
     formDispatcher({ type: "EMAIL_VALIDATION", value: formState.email.value, isEmailExists: authCtx.isEmailExists });
     formDispatcher({ type: "PSW_VALIDATION", value: formState.password.value });
 
     if (formState.isValid) {
       let loginData = {email: formState.email.value, password: formState.password.value};
-      authCtx.login(loginData);
+      setLoginResponse(authCtx.login(loginData));
     }
   };
 
@@ -118,6 +126,7 @@ const Login = () => {
               <Form.Group className="mb-2 form-floating" controlId="stayLogin">
                 <Form.Check type="checkbox" label="Stay LoggedIn" />
               </Form.Group>
+                {loginResponse === false && <Form.Text className="text-danger">Email or Password is wrong. Please try again.</Form.Text>}
               <Form.Group className="mt-4 text-center">
                 <Button variant="primary" type="submit" className="mb-4 w-100">
                   Login
