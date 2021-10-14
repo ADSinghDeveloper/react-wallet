@@ -2,8 +2,8 @@ import React, { useContext } from "react";
 import { Container, Button } from "react-bootstrap";
 
 import AuthContext from "./store/auth-context";
-import Login from "./components/Login/Login";
-// import Register from "./components/Register/Register";
+import Login from "./components/Login";
+// import Register from "./components/Register";
 
 function App() {
   const authCtx = useContext(AuthContext);

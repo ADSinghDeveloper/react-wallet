@@ -1,7 +1,7 @@
 import React, { useReducer, useContext, useState } from "react";
 import { Card, Col, Form, Row, Button } from "react-bootstrap";
-import AuthContext from "../../store/auth-context";
-import validateEMail from "../../helper/helper";
+import AuthContext from "../store/auth-context";
+import validateEMail from "../helper/helper";
 
 const formReducer = (state, action) => {
   switch (action.type) {

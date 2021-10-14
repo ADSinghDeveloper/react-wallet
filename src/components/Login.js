@@ -1,7 +1,7 @@
 import React, { useReducer, useContext, useState } from "react";
 import { Card, Col, Form, Row, Button } from "react-bootstrap";
-import AuthContext from "../../store/auth-context";
-import validateEMail from "../../helper/helper";
+import AuthContext from "../store/auth-context";
+import validateEMail from "../helper/helper";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -123,10 +123,10 @@ const Login = () => {
                 />
                 <Form.Label>Password</Form.Label>
               </Form.Group>
-              <Form.Group className="mb-2 form-floating" controlId="stayLogin">
+              {/* <Form.Group className="mb-2 form-floating" controlId="stayLogin">
                 <Form.Check type="checkbox" label="Stay LoggedIn" />
-              </Form.Group>
-                {loginResponse === false && <Form.Text className="text-danger">Email or Password is wrong. Please try again.</Form.Text>}
+              </Form.Group> */}
+                {loginResponse === false && <Form.Text className="text-danger">Incorrect Password. Please try again.</Form.Text>}
               <Form.Group className="mt-4 text-center">
                 <Button variant="primary" type="submit" className="mb-4 w-100">
                   Login
