@@ -3,24 +3,27 @@ import { Container, Button } from "react-bootstrap";
 
 import AuthContext from "./store/auth-context";
 import Login from "./components/Login";
-// import Register from "./components/Register";
+import Register from "./components/Register";
+// import MsgModal from "./components/MsgModal";
 
 function App() {
   const authCtx = useContext(AuthContext);
 
   return (
     <Container fluid>
-      {authCtx.isLoggedIn === false && <Login />}
-      {authCtx.isLoggedIn === true && (
+      {!authCtx.isLoggedIn && !authCtx.signUp && <Login />}
+      {authCtx.isLoggedIn && (
         <div className="text-success">
-          Welcome {authCtx.loggedInUser.name}!
+          Welcome {authCtx.authUser.name}!
+          <br />
+          You have been LoggedIn Successfully!<br />
           <Button variant="primary" onClick={authCtx.logout}>
             Logout
-          </Button><br />You have been LoggedIn Successfully!
+          </Button>
         </div>
       )}
-      {/* <div className="justify-content-md-center row">OR</div>
-      {authCtx.isLoggedIn === false && <Register />} */}
+      {/* <MsgModal /> */}
+      {!authCtx.isLoggedIn && authCtx.signUp && <Register />}
     </Container>
   );
 }

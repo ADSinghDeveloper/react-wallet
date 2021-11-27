@@ -1,5 +1,7 @@
 import React, { useReducer, useContext, useState } from "react";
-import { Card, Col, Form, Row, Button } from "react-bootstrap";
+import { Card, Col, Form, Row, Button, Spinner, Alert } from "react-bootstrap";
+import useApi from "../hooks/use-api";
+
 import AuthContext from "../store/auth-context";
 import validateEMail from "../helper/helper";
 
@@ -11,8 +13,8 @@ const formReducer = (state, action) => {
         email: {
           value: action.value,
           isValid: validateEMail(action.value),
-          isExists:
-            validateEMail(action.value) && action.isEmailExists(action.value),
+          // isExists:
+          //   validateEMail(action.value) && action.isEmailExists(action.value),
         },
       };
       break;
@@ -21,7 +23,7 @@ const formReducer = (state, action) => {
         ...state,
         password: {
           value: action.value.trim(),
-          isValid: action.value.trim().length > 7,
+          isValid: action.value.trim().length > 5,
         },
       };
       break;
@@ -31,7 +33,7 @@ const formReducer = (state, action) => {
   return {
     ...state,
     isValid:
-      state.email.isValid && state.email.isExists && state.password.isValid,
+      state.email.isValid /*&& state.email.isExists*/ && state.password.isValid,
   };
 };
 
@@ -44,17 +46,20 @@ const Login = () => {
   });
   const authCtx = useContext(AuthContext);
   const [loginResponse, setLoginResponse] = useState(null);
+  const {isLoading, error, makeRequest: loginRequest} = useApi();
+  let errorMsg = '';
 
   const clearLoginError = () => {
     setLoginResponse(null);
   }
 
   const emailFieldHandler = (event) => {
+    // console.log(event.currentTarget.value);
     clearLoginError();
     formDispatcher({
       type: "EMAIL_VALIDATION",
       value: event.target.value,
-      isEmailExists: authCtx.isEmailExists
+      // isEmailExists: authCtx.isEmailExists
     });
   };
 
@@ -64,25 +69,51 @@ const Login = () => {
   };
 
   const submitHandler = (event) => {
-    setLoginResponse(null);
     event.preventDefault();
-    formDispatcher({ type: "EMAIL_VALIDATION", value: formState.email.value, isEmailExists: authCtx.isEmailExists });
+    setLoginResponse(null);
+
+    formDispatcher({
+      type: "EMAIL_VALIDATION",
+      value: formState.email.value,
+      // isEmailExists: authCtx.isEmailExists,
+    });
     formDispatcher({ type: "PSW_VALIDATION", value: formState.password.value });
+    // setLoading(true);
 
     if (formState.isValid) {
-      let loginData = {email: formState.email.value, password: formState.password.value};
-      setLoginResponse(authCtx.login(loginData));
+      let loginData = {
+        email: formState.email.value,
+        password: formState.password.value,
+      };
+
+      loginRequest({url: 'login', params: loginData}, (response) => {
+        if (
+          response.hasOwnProperty("user") &&
+          typeof response.user != "undefined"
+        ) {
+          authCtx.setLoggedInData(
+            true,
+            response.user,
+            response.access_token,
+            response.token_type
+          );
+        }
+      });
     }
   };
+
+  if(error){
+    errorMsg = error.code === 401 ? "Username/Password mismatched." : `${error.title} - ${error.message}` ;
+  }
 
   return (
     <Row className="justify-content-md-center">
       <Col lg={3}>
         <Card>
           <h3 className="card-header mb-4 fw-normal text-center text-primary">
-            Login
+            Wallet LogIn
           </h3>
-          <Card.Body>
+          <Card.Body className="pb-4">
             {/* <Card.Title>Login</Card.Title> */}
             <Form onSubmit={submitHandler}>
               <Form.Group className="mb-2 form-floating" controlId="loginEmail">
@@ -94,14 +125,25 @@ const Login = () => {
                   onBlur={emailFieldHandler}
                   className={
                     formState.email.isValid != null
-                      ? formState.email.isValid && formState.email.isExists
+                      ? formState.email.isValid //&& formState.email.isExists
                         ? "is-valid"
                         : "is-invalid"
                       : ""
                   }
+                  title={
+                    formState.email.isValid != null
+                      ? formState.email.isValid //&& formState.email.isExists
+                        ? ""
+                        : "Invalid Email"
+                      : ""
+                  }
                 />
                 <Form.Label>Email address</Form.Label>
-                {formState.email.isValid && !formState.email.isExists && <Form.Text className="text-danger">Email not exists in our records.</Form.Text>}
+                {/* {formState.email.isValid && !formState.email.isExists && (
+                  <Form.Text className="text-danger">
+                    Email not exists in our records.
+                  </Form.Text>
+                )} */}
               </Form.Group>
               <Form.Group
                 className="mb-2 form-floating"
@@ -126,13 +168,29 @@ const Login = () => {
               {/* <Form.Group className="mb-2 form-floating" controlId="stayLogin">
                 <Form.Check type="checkbox" label="Stay LoggedIn" />
               </Form.Group> */}
-                {loginResponse === false && <Form.Text className="text-danger">Incorrect Password. Please try again.</Form.Text>}
+              {loginResponse === false && (
+                <Form.Text className="text-danger">
+                  Incorrect Password. Please try again.
+                </Form.Text>
+              )}
               <Form.Group className="mt-4 text-center">
-                <Button variant="primary" type="submit" className="mb-4 w-100">
-                  Login
-                </Button>
+                {isLoading && !error && <Spinner animation="border" variant="primary" />}
+                {!isLoading && (
+                  <Button variant="primary" type="submit" className="w-100">
+                    Log In
+                  </Button>
+                )}
               </Form.Group>
             </Form>
+            {error && (
+              <Alert variant="danger" className="mt-3">
+                <small>{errorMsg}</small>
+              </Alert>
+            )}
+            <hr />
+            <div className="text-center">
+            <Button variant="primary" onClick={authCtx.getRegister}>Create Your Wallet Account</Button>
+            </div>
           </Card.Body>
         </Card>
       </Col>
