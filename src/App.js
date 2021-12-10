@@ -1,9 +1,10 @@
 import React, { useContext } from "react";
-import { Container, Button } from "react-bootstrap";
+import { Container} from "react-bootstrap";
 
 import AuthContext from "./store/auth-context";
 import Login from "./components/Login";
 import Register from "./components/Register";
+import Dashboard from "./components/Dashboard";
 // import MsgModal from "./components/MsgModal";
 
 function App() {
@@ -12,16 +13,7 @@ function App() {
   return (
     <Container fluid>
       {!authCtx.isLoggedIn && !authCtx.signUp && <Login />}
-      {authCtx.isLoggedIn && (
-        <div className="text-success">
-          Welcome {authCtx.authUser.name}!
-          <br />
-          You have been LoggedIn Successfully!<br />
-          <Button variant="primary" onClick={authCtx.logout}>
-            Logout
-          </Button>
-        </div>
-      )}
+      {authCtx.isLoggedIn && <Dashboard />}
       {/* <MsgModal /> */}
       {!authCtx.isLoggedIn && authCtx.signUp && <Register />}
     </Container>

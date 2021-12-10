@@ -8,8 +8,8 @@ const AuthContext = React.createContext({
   authUser: { name: "" },
   setLoggedInData: (status, user, token, tokenType) => {},
   logout: () => {},
-  getRegister: () => {},
-  getLogin: () => {},
+  toRegister: () => {},
+  toLogin: () => {},
   signUp: false,
 });
 
@@ -21,16 +21,8 @@ export const AuthContextProvider = (props) => {
     token: "",
     type: "",
   });
-  // const lsUserIndex = "rwUsers";
+
   const { makeRequest: logoutRequest } = useApi();
-
-  // if (!localStorage.hasOwnProperty(lsUserIndex)) {
-  //   localStorage.setItem(lsUserIndex, JSON.stringify([]));
-  // }
-
-  // const loginHandler = (loginData) => {
-  //   console.log(loginData)
-  // };
 
   const logoutHandler = () => {
     logoutRequest(
@@ -47,22 +39,6 @@ export const AuthContextProvider = (props) => {
       }
     );
   };
-
-  // const isEmailExistsHandler = (email) => {
-  //   let rwUsersData = JSON.parse(localStorage.getItem(lsUserIndex));
-  //   let indexFound = rwUsersData.findIndex((user) => user.email === email);
-  //   return indexFound >= 0;
-  // };
-
-  // const registerHandler = (regData) => {
-  //   let rwUsersData = JSON.parse(localStorage.getItem(lsUserIndex));
-  //   if (rwUsersData.length > 0) {
-  //     rwUsersData.push(regData);
-  //   } else {
-  //     rwUsersData = [regData];
-  //   }
-  //   localStorage.setItem(lsUserIndex, JSON.stringify(rwUsersData));
-  // };
 
   const setLoggedInData = (status, user, token, tokenType) => {
     setIsLogin(status);
@@ -84,8 +60,8 @@ export const AuthContextProvider = (props) => {
     authUser: loggedInUser,
     setLoggedInData: setLoggedInData,
     logout: logoutHandler,
-    getRegister: getRegisterHandler,
-    getLogin: getLoginHandler,
+    toRegister: getRegisterHandler,
+    toLogin: getLoginHandler,
     signUp: getRegisterFlag
   };
 

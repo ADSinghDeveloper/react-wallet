@@ -189,7 +189,7 @@ const Login = () => {
             )}
             <hr />
             <div className="text-center">
-            <Button variant="primary" onClick={authCtx.getRegister}>Create Your Wallet Account</Button>
+            <Button variant="link" className="text-decoration-none" disabled={isLoading} onClick={authCtx.toRegister}>Create Your Wallet Account</Button>
             </div>
           </Card.Body>
         </Card>

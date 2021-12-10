@@ -130,7 +130,7 @@ const Register = () => {
             response.access_token,
             response.token_type
           );
-          // setRegSuccess(true);
+          authCtx.getLogin();
         } else {
           if(response.hasOwnProperty("email")){
             setEmailError(response.email);
@@ -302,7 +302,7 @@ const Register = () => {
                 You have been registered successfully.
               </div>
             )}
-            <Card.Text className="text-center">Have an account? <br /><Button variant="link" onClick={authCtx.getLogin} className="text-decoration-none">Login here</Button></Card.Text>
+            <Card.Text className="text-center">Have an account? <br /><Button variant="link" disabled={isLoading} onClick={authCtx.toLogin} className="text-decoration-none">Login</Button></Card.Text>
           </Card.Body>
         </Card>
       </Col>
