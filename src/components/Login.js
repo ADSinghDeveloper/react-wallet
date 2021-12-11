@@ -13,8 +13,6 @@ const formReducer = (state, action) => {
         email: {
           value: action.value,
           isValid: validateEMail(action.value),
-          // isExists:
-          //   validateEMail(action.value) && action.isEmailExists(action.value),
         },
       };
       break;
@@ -32,8 +30,7 @@ const formReducer = (state, action) => {
   }
   return {
     ...state,
-    isValid:
-      state.email.isValid /*&& state.email.isExists*/ && state.password.isValid,
+    isValid: state.email.isValid && state.password.isValid,
   };
 };
 
@@ -54,12 +51,10 @@ const Login = () => {
   }
 
   const emailFieldHandler = (event) => {
-    // console.log(event.currentTarget.value);
     clearLoginError();
     formDispatcher({
       type: "EMAIL_VALIDATION",
       value: event.target.value,
-      // isEmailExists: authCtx.isEmailExists
     });
   };
 
@@ -75,10 +70,8 @@ const Login = () => {
     formDispatcher({
       type: "EMAIL_VALIDATION",
       value: formState.email.value,
-      // isEmailExists: authCtx.isEmailExists,
     });
     formDispatcher({ type: "PSW_VALIDATION", value: formState.password.value });
-    // setLoading(true);
 
     if (formState.isValid) {
       let loginData = {
@@ -125,25 +118,20 @@ const Login = () => {
                   onBlur={emailFieldHandler}
                   className={
                     formState.email.isValid != null
-                      ? formState.email.isValid //&& formState.email.isExists
+                      ? formState.email.isValid
                         ? "is-valid"
                         : "is-invalid"
                       : ""
                   }
                   title={
                     formState.email.isValid != null
-                      ? formState.email.isValid //&& formState.email.isExists
+                      ? formState.email.isValid
                         ? ""
                         : "Invalid Email"
                       : ""
                   }
                 />
                 <Form.Label>Email address</Form.Label>
-                {/* {formState.email.isValid && !formState.email.isExists && (
-                  <Form.Text className="text-danger">
-                    Email not exists in our records.
-                  </Form.Text>
-                )} */}
               </Form.Group>
               <Form.Group
                 className="mb-2 form-floating"
