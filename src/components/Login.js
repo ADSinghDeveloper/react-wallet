@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, useState } from "react";
+import React, { useReducer, useContext } from "react";
 import { Card, Col, Form, Row, Button, Spinner, Alert } from "react-bootstrap";
 import useApi from "../hooks/use-api";
 
@@ -42,16 +42,10 @@ const Login = () => {
     isValid: false,
   });
   const authCtx = useContext(AuthContext);
-  const [loginResponse, setLoginResponse] = useState(null);
   const {isLoading, error, makeRequest: loginRequest} = useApi();
   let errorMsg = '';
 
-  const clearLoginError = () => {
-    setLoginResponse(null);
-  }
-
   const emailFieldHandler = (event) => {
-    clearLoginError();
     formDispatcher({
       type: "EMAIL_VALIDATION",
       value: event.target.value,
@@ -59,13 +53,11 @@ const Login = () => {
   };
 
   const passwordFieldHandler = (event) => {
-    clearLoginError();
     formDispatcher({ type: "PSW_VALIDATION", value: event.target.value });
   };
 
   const submitHandler = (event) => {
     event.preventDefault();
-    setLoginResponse(null);
 
     formDispatcher({
       type: "EMAIL_VALIDATION",
@@ -156,11 +148,6 @@ const Login = () => {
               {/* <Form.Group className="mb-2 form-floating" controlId="stayLogin">
                 <Form.Check type="checkbox" label="Stay LoggedIn" />
               </Form.Group> */}
-              {loginResponse === false && (
-                <Form.Text className="text-danger">
-                  Incorrect Password. Please try again.
-                </Form.Text>
-              )}
               <Form.Group className="mt-4 text-center">
                 {isLoading && !error && <Spinner animation="border" variant="primary" />}
                 {!isLoading && (
