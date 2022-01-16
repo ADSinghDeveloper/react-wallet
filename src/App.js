@@ -1,21 +1,22 @@
-import React, { useContext } from "react";
+import React from "react";
 import { Container} from "react-bootstrap";
+import { useSelector } from "react-redux";
 
-import AuthContext from "./store/auth-context";
 import Login from "./components/Login";
 import Register from "./components/Register";
 import Dashboard from "./components/Dashboard";
 // import MsgModal from "./components/MsgModal";
 
 function App() {
-  const authCtx = useContext(AuthContext);
+  const isLoggedIn = useSelector(state => state.isLoggedIn);
+  const signUp = useSelector(state => state.signUp);
 
   return (
     <Container fluid>
-      {!authCtx.isLoggedIn && !authCtx.signUp && <Login />}
-      {authCtx.isLoggedIn && <Dashboard />}
+      {!isLoggedIn && !signUp && <Login />}
+      {!isLoggedIn && signUp && <Register />}
+      {isLoggedIn && <Dashboard />}
       {/* <MsgModal /> */}
-      {!authCtx.isLoggedIn && authCtx.signUp && <Register />}
     </Container>
   );
 }

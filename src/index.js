@@ -5,14 +5,16 @@ import "bootstrap/dist/css/bootstrap.css";
 import "./index.css";
 
 import App from "./App";
-import { AuthContextProvider } from "./store/auth-context";
+import { Provider } from "react-redux";
+import store from "./store/redux";
 import reportWebVitals from "./reportWebVitals";
+
 
 ReactDOM.render(
   <React.StrictMode>
-    <AuthContextProvider>
+    <Provider store={store}>
       <App />
-    </AuthContextProvider>
+    </Provider>
   </React.StrictMode>,
   document.getElementById("root")
 );

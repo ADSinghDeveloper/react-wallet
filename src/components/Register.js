@@ -1,9 +1,10 @@
-import React, { useReducer, useContext, useState } from "react";
+import React, { useReducer, useState } from "react";
 import { Card, Col, Form, Row, Button, Spinner, Alert } from "react-bootstrap";
 
-import AuthContext from "../store/auth-context";
+import { authActions } from "../store/redux";
 import useApi from "../hooks/use-api";
 import validateEMail from "../helper/helper";
+import { useDispatch } from "react-redux";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -68,8 +69,8 @@ const Register = () => {
   });
 
   const regSuccess = false;
-  const authCtx = useContext(AuthContext);
-  const {isLoading, error, makeRequest: registerRequest} = useApi();
+  const dispatch = useDispatch();
+  const { isLoading, error, makeRequest: registerRequest } = useApi();
   const [emailError, setEmailError] = useState(null);
 
   const nameHandler = (event) => {
@@ -101,7 +102,10 @@ const Register = () => {
       value: formState.email.value,
     });
     formDispatcher({ type: "PSW_VALIDATION", value: formState.password.value });
-    formDispatcher({ type: "CPSW_VALIDATION", value: formState.cpassword.value });
+    formDispatcher({
+      type: "CPSW_VALIDATION",
+      value: formState.cpassword.value,
+    });
 
     if (formState.isValid) {
       let regData = {
@@ -109,28 +113,36 @@ const Register = () => {
         email: formState.email.value,
         password: formState.password.value,
       };
-      registerRequest({url: 'register', type: 'post', params: regData}, (response) => {
-        if (
-          response.hasOwnProperty("user") &&
-          typeof response.user != "undefined"
-        ) {
-          authCtx.setLoggedInData(
-            true,
-            response.user,
-            response.access_token,
-            response.token_type
-          );
-          authCtx.toLogin();
-        } else {
-          if(response.hasOwnProperty("email")){
-            setEmailError(response.email);
-          }else{
-            console.warn(response);
+      registerRequest(
+        { url: "register", type: "post", params: regData },
+        (response) => {
+          if (
+            response.hasOwnProperty("user") &&
+            typeof response.user != "undefined"
+          ) {
+            dispatch(
+              authActions.setLoggedInData({
+                login_status: true,
+                user: response.user,
+                token: response.access_token,
+                token_type: response.token_type,
+              })
+            );
+          } else {
+            if (response.hasOwnProperty("email")) {
+              setEmailError(response.email);
+            } else {
+              console.warn(response);
+            }
           }
         }
-      });
+      );
     }
   };
+
+  const loginHandler = () => {
+    dispatch(authActions.toLogin());
+  }
 
   return (
     <Row className="justify-content-md-center">
@@ -140,7 +152,9 @@ const Register = () => {
             Wallet
           </h3>
           <Card.Body className="pb-4">
-            <Card.Title className="h3 mb-3 fw-normal text-center">Create Your Wallet Account</Card.Title>
+            <Card.Title className="h3 mb-3 fw-normal text-center">
+              Create Your Wallet Account
+            </Card.Title>
             {!regSuccess && (
               <Form onSubmit={submitHandler}>
                 <Form.Group className="mb-2 form-floating" controlId="name">
@@ -247,7 +261,17 @@ const Register = () => {
                 You have been registered successfully.
               </div>
             )}
-            <Card.Text className="text-center">Have an account? <br /><Button variant="link" disabled={isLoading} onClick={authCtx.toLogin} className="text-decoration-none">Login</Button></Card.Text>
+            <Card.Text className="text-center">
+              Have an account? <br />
+              <Button
+                variant="link"
+                disabled={isLoading}
+                onClick={loginHandler}
+                className="text-decoration-none"
+              >
+                Login
+              </Button>
+            </Card.Text>
           </Card.Body>
         </Card>
       </Col>

@@ -1,8 +1,9 @@
-import React, { useReducer, useContext } from "react";
+import React, { useReducer } from "react";
 import { Card, Col, Form, Row, Button, Spinner, Alert } from "react-bootstrap";
 import useApi from "../hooks/use-api";
 
-import AuthContext from "../store/auth-context";
+import { authActions } from "../store/redux";
+import { useDispatch } from "react-redux";
 import validateEMail from "../helper/helper";
 
 const formReducer = (state, action) => {
@@ -41,9 +42,9 @@ const Login = () => {
     stay_logged_in: { value: false },
     isValid: false,
   });
-  const authCtx = useContext(AuthContext);
-  const {isLoading, error, makeRequest: loginRequest} = useApi();
-  let errorMsg = '';
+  const dispatch = useDispatch();
+  const { isLoading, error, makeRequest: loginRequest } = useApi();
+  let errorMsg = "";
 
   const emailFieldHandler = (event) => {
     formDispatcher({
@@ -71,24 +72,33 @@ const Login = () => {
         password: formState.password.value,
       };
 
-      loginRequest({url: 'login', params: loginData}, (response) => {
+      loginRequest({ url: "login", params: loginData }, (response) => {
         if (
           response.hasOwnProperty("user") &&
           typeof response.user != "undefined"
         ) {
-          authCtx.setLoggedInData(
-            true,
-            response.user,
-            response.access_token,
-            response.token_type
+          dispatch(
+            authActions.setLoggedInData({
+              login_status: true,
+              user: response.user,
+              token: response.access_token,
+              token_type: response.token_type,
+            })
           );
         }
       });
     }
   };
 
-  if(error){
-    errorMsg = error.code === 401 ? "Username/Password mismatched." : `${error.title} - ${error.message}` ;
+  const registerHandler = () => {
+    dispatch(authActions.toRegister());
+  }
+
+  if (error) {
+    errorMsg =
+      error.code === 401
+        ? "Username/Password mismatched."
+        : `${error.title} - ${error.message}`;
   }
 
   return (
@@ -149,7 +159,9 @@ const Login = () => {
                 <Form.Check type="checkbox" label="Stay LoggedIn" />
               </Form.Group> */}
               <Form.Group className="mt-4 text-center">
-                {isLoading && !error && <Spinner animation="border" variant="primary" />}
+                {isLoading && !error && (
+                  <Spinner animation="border" variant="primary" />
+                )}
                 {!isLoading && (
                   <Button variant="primary" type="submit" className="w-100">
                     Log In
@@ -164,7 +176,14 @@ const Login = () => {
             )}
             <hr />
             <div className="text-center">
-            <Button variant="link" className="text-decoration-none" disabled={isLoading} onClick={authCtx.toRegister}>Create Your Wallet Account</Button>
+              <Button
+                variant="link"
+                className="text-decoration-none"
+                disabled={isLoading}
+                onClick={registerHandler}
+              >
+                Create Your Wallet Account
+              </Button>
             </div>
           </Card.Body>
         </Card>
