@@ -1,15 +1,21 @@
 import { useCallback, useState } from "react";
+import { useSelector } from "react-redux";
 import axios from "axios";
 
 const useApi = () => {
   const [isLoading, setLoading] = useState(false);
-  const [error, setError] = useState(null);
+  const [alert, setAlert] = useState({error: null, success: null});
+  const accessTokenData = useSelector(state => state.auth.accessToken);
   const apiHost = "http://wallet2.ads/api/";
   // const apiHost = "http://localhost:8000/";
   // axios.defaults.withCredentials = true;
 
   const makeRequest = useCallback((requestConfig, callBack) => {
+    setAlert({error: null, success: null});
     setLoading(true);
+    const requestHeaders = {
+      'Authorization': `${accessTokenData.type} ${accessTokenData.token}`
+    };
     console.log(requestConfig);
     let requestService;
     if (requestConfig.url === "login") {
@@ -21,13 +27,12 @@ const useApi = () => {
       requestService = axios.post(
         `${apiHost}${requestConfig.url}`,
         requestConfig.params || {},
-        {headers: requestConfig.headers || {}}
+        {headers: requestHeaders || {}}
       );
     } else {
       requestService = axios.get(
         `${apiHost}${requestConfig.url}`,
-        requestConfig.params || {},
-        {headers: requestConfig.headers || {}}
+        {headers: requestHeaders}
       );
     }
 
@@ -36,37 +41,30 @@ const useApi = () => {
         setLoading(false);
         console.log(response);
         if (response.status === 200) {
-          callBack(response.data);
+          if (response.data.error) {
+            setAlert({error: response.data.error, success: false});
+          }else{
+            setAlert({error: false, success: response.data.success});
+            callBack(response.data);
+          }
         } else {
-          setError({
-            title: "Response Error",
-            message: response,
-          });
+          setAlert({error: response, success: false});
         }
       })
       .catch((error) => {
         setLoading(false);
-        let errorCode = '';
-        let errorTitle = '';
         let errorMsg = '';
         console.log(error);
         if(error.hasOwnProperty("response") && error.response !== undefined){
-          errorCode = error.response.status;
-          errorTitle = error.response.statusText;
-          errorMsg = error.response.data.message;
+          errorMsg = (error.response.status === 401) ? "Username/Password mismatched." : `${error.response.statusText}: ${error.response.data.message}`;
         }else{
-          errorTitle = 'Error: Someting went wrong';
-          errorMsg = 'Could be a network error.';
+          errorMsg = 'Someting went wrong or could be a network error.';
         }
-        setError({
-          code: errorCode,
-          title: errorTitle,
-          message: errorMsg,
-        });
+        setAlert({error: errorMsg, success: false});
       });
-  }, [apiHost]);
+  }, [apiHost, accessTokenData]);
 
-  return { isLoading, error, makeRequest };
+  return { isLoading, alert, makeRequest };
 };
 
 export default useApi;

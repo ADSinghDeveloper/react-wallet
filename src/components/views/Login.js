@@ -1,10 +1,10 @@
 import React, { useReducer } from "react";
 import { Card, Col, Form, Row, Button, Spinner, Alert } from "react-bootstrap";
-import useApi from "../hooks/use-api";
+import useApi from "../../hooks/use-api";
 
-import { authActions } from "../store/redux";
+import { authActions } from "../../store/auth";
 import { useDispatch } from "react-redux";
-import validateEMail from "../helper/helper";
+import validateEMail from "../../helper/helper";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -43,8 +43,7 @@ const Login = () => {
     isValid: false,
   });
   const dispatch = useDispatch();
-  const { isLoading, error, makeRequest: loginRequest } = useApi();
-  let errorMsg = "";
+  const { isLoading, alert, makeRequest: loginRequest } = useApi();
 
   const emailFieldHandler = (event) => {
     formDispatcher({
@@ -94,16 +93,9 @@ const Login = () => {
     dispatch(authActions.toRegister());
   }
 
-  if (error) {
-    errorMsg =
-      error.code === 401
-        ? "Username/Password mismatched."
-        : `${error.title} - ${error.message}`;
-  }
-
   return (
     <Row className="justify-content-md-center">
-      <Col lg={3}>
+      <Col lg={12}>
         <Card>
           <h3 className="card-header mb-4 fw-normal text-center text-primary">
             Wallet LogIn
@@ -159,7 +151,7 @@ const Login = () => {
                 <Form.Check type="checkbox" label="Stay LoggedIn" />
               </Form.Group> */}
               <Form.Group className="mt-4 text-center">
-                {isLoading && !error && (
+                {isLoading && !alert.success && (
                   <Spinner animation="border" variant="primary" />
                 )}
                 {!isLoading && (
@@ -169,9 +161,9 @@ const Login = () => {
                 )}
               </Form.Group>
             </Form>
-            {error && (
+            {!alert.success && alert.error && (
               <Alert variant="danger" className="mt-3">
-                <small>{errorMsg}</small>
+                {alert.error}
               </Alert>
             )}
             <hr />

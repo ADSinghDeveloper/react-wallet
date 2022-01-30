@@ -1,8 +1,5 @@
 html, body { height: 100%;}
 body {
-  margin: 0;
-  display: flex;
-  align-items: center;
   font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
     'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
     sans-serif;
@@ -10,9 +7,11 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: silver;
 }
-code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+.auth-box {
+  display: flex; align-items: center; justify-content: center; height: 100vh;
+}
+.auth-box > div {
+  width: 400px;
 }
 .card {
   box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);
@@ -20,5 +19,15 @@ code {
 }
 .card-header {
   box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
-  /* color: whitesmoke; */
+}
+.main-content {
+  margin: 20px 0;
+}
+.main-content .card {
+  margin-bottom: 30px;
+}
+.card-header .card-title { margin: 0; font-weight: 400;}
+.main-content .card-header { box-shadow: none;}
+.toast {
+  font-size: 1rem;
 }

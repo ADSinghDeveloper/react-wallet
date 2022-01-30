@@ -1,9 +1,9 @@
 import React, { useReducer, useState } from "react";
 import { Card, Col, Form, Row, Button, Spinner, Alert } from "react-bootstrap";
 
-import { authActions } from "../store/redux";
-import useApi from "../hooks/use-api";
-import validateEMail from "../helper/helper";
+import { authActions } from "../../store/auth";
+import useApi from "../../hooks/use-api";
+import validateEMail from "../../helper/helper";
 import { useDispatch } from "react-redux";
 
 const formReducer = (state, action) => {
@@ -31,7 +31,7 @@ const formReducer = (state, action) => {
         ...state,
         password: {
           value: action.value.trim(),
-          isValid: action.value.trim().length > 7,
+          isValid: action.value.trim().length > 5,
         },
       };
       break;
@@ -146,7 +146,7 @@ const Register = () => {
 
   return (
     <Row className="justify-content-md-center">
-      <Col lg={3}>
+      <Col lg={12}>
         <Card>
           <h3 className="card-header mb-3 fw-normal text-center text-primary">
             Wallet
