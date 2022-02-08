@@ -1,10 +1,11 @@
 import React, { useReducer, useState } from "react";
-import { Card, Col, Form, Row, Button, Spinner, Alert } from "react-bootstrap";
+import { Card, Col, Form, Row, Button, Spinner } from "react-bootstrap";
 
 import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
 import validateEMail from "../../helper/helper";
 import { useDispatch } from "react-redux";
+import AlertMsg from "../AlertMsg";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -250,12 +251,7 @@ const Register = () => {
                 </Form.Group>
               </Form>
             )}
-            {error && (
-              <Alert variant="danger">
-                <p>{error.title}</p>
-                <small>{error.message}</small>
-              </Alert>
-            )}
+            <AlertMsg {...alert} />
             {regSuccess && (
               <div className="alert alert-success" role="alert">
                 You have been registered successfully.

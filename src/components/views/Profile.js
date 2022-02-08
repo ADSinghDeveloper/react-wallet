@@ -1,10 +1,11 @@
 import React, { useReducer } from "react";
-import { Card, Col, Row, Form, Spinner, Button, Alert } from "react-bootstrap";
+import { Card, Col, Row, Form, Spinner, Button } from "react-bootstrap";
 
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
 import validateEMail from "../../helper/helper";
+import AlertMsg from "../AlertMsg";
 
 const formReducer = (state, action) => {
   const PSW_LENGTH = 6;
@@ -43,6 +44,10 @@ const formReducer = (state, action) => {
           value: action.value.trim(),
           isValid: action.value.trim().length > PSW_LENGTH,
         },
+        confirm_password: {
+          value: state.confirm_password.value,
+          isValid: state.confirm_password.value.trim().length > PSW_LENGTH,
+        },
       };
       break;
       case "CPSW_VALIDATION":
@@ -57,7 +62,12 @@ const formReducer = (state, action) => {
         };
         break;
         case "RESET":
-          state = action.value;
+          state = {
+            ...state,
+            current_password: { value: "", isValid: null },
+            new_password: { value: "", isValid: null },
+            confirm_password: { value: "", isValid: null },
+          };
           break;
     default:
       throw new Error("Action type is required.");
@@ -120,9 +130,9 @@ const Profile = () => {
         new_psw: formState.new_password.value,
         conf_psw: formState.confirm_password.value,
       };
-
+// console.log(profileData);return;
       profileUpdateRequest({
-        type: 'post',
+        type: 'patch',
         url: 'save_profile',
         params: profileData
       }, (response) => {
@@ -133,6 +143,7 @@ const Profile = () => {
           dispatch(
             authActions.updateAuthUser({ user: response.user })
           );
+          formDispatcher({ type: "RESET" });
           // dispatch(authActions.toDashboard());
         } else {
           console.warn(response);
@@ -144,7 +155,7 @@ const Profile = () => {
     }
   }
 
-  return (<>
+  return (
     <Row className="justify-content-md-center">
       <Col lg={6}>
         <Card>
@@ -242,21 +253,11 @@ const Profile = () => {
                 )}
               </Form.Group>
             </Form>
-            {!alert.success && alert.error && (
-              <Alert variant="danger" className="mt-3">
-                {alert.error}
-              </Alert>
-            )}
-            {!alert.error && alert.success && (
-              <Alert variant="success" className="mt-3">
-                {alert.success}
-              </Alert>
-            )}
+            <AlertMsg {...alert} />
           </Card.Body>
         </Card>
       </Col>
     </Row>
-    </>
   );
 };
 

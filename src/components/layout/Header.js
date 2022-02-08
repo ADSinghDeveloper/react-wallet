@@ -2,13 +2,17 @@ import React from "react";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../store/auth";
+import useApi from "../../hooks/use-api";
 
 const Header = () => {
   const dispatch = useDispatch();
   const authUserName = useSelector((state) => state.auth.authUser.name);
+  const { makeRequest: logoutRequest } = useApi();
 
   const logoutHandler = () => {
-    dispatch(authActions.logout());
+    logoutRequest({url: "logout",type: "post"}, (response) => {
+        dispatch(authActions.logout());
+      });
   };
 
   const goToProfileHandler = () => {

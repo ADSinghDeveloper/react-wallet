@@ -1,54 +1,45 @@
 import { useCallback, useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
+import { notificationActions } from "../store/notification";
 
 const useApi = () => {
   const [isLoading, setLoading] = useState(false);
   const [alert, setAlert] = useState({error: null, success: null});
   const accessTokenData = useSelector(state => state.auth.accessToken);
-  const apiHost = "http://wallet2.ads/api/";
-  // const apiHost = "http://localhost:8000/";
-  // axios.defaults.withCredentials = true;
+  const dispatch = useDispatch();
+  const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
   const makeRequest = useCallback((requestConfig, callBack) => {
     setAlert({error: null, success: null});
+    dispatch(notificationActions.close()); 
     setLoading(true);
     const requestHeaders = {
-      'Authorization': `${accessTokenData.type} ${accessTokenData.token}`
+      'Authorization': requestConfig.url === 'profile'? `${requestConfig.token_type} ${requestConfig.token}` : `${accessTokenData.type} ${accessTokenData.token}`
     };
-    console.log(requestConfig);
-    let requestService;
-    if (requestConfig.url === "login") {
-      requestService = axios.post(
-        `${apiHost}${requestConfig.url}`,
-        requestConfig.params || {}
-      );
-    } else if (requestConfig.type === "post") {
-      requestService = axios.post(
-        `${apiHost}${requestConfig.url}`,
-        requestConfig.params || {},
-        {headers: requestHeaders || {}}
-      );
-    } else {
-      requestService = axios.get(
-        `${apiHost}${requestConfig.url}`,
-        {headers: requestHeaders}
-      );
-    }
-
-    requestService
+    axios({
+        method: requestConfig.type,
+        baseURL: apiHost, 
+        url: requestConfig.url,
+        data: requestConfig.params || {},
+        headers: requestHeaders || {},
+        withCredentials: true,
+      })
       .then((response) => {
         setLoading(false);
-        console.log(response);
+        // console.log(response);
         if (response.status === 200) {
           if (response.data.error) {
             setAlert({error: response.data.error, success: false});
+            dispatch(notificationActions.send({type: 'error', message: response.data.error}));
           }else{
             setAlert({error: false, success: response.data.success});
+            dispatch(notificationActions.send({type: 'success', message: response.data.success}));
             callBack(response.data);
           }
         } else {
           setAlert({error: response, success: false});
+          dispatch(notificationActions.send({type: 'error', message: response}));
         }
       })
       .catch((error) => {
@@ -61,8 +52,9 @@ const useApi = () => {
           errorMsg = 'Someting went wrong or could be a network error.';
         }
         setAlert({error: errorMsg, success: false});
+        dispatch(notificationActions.send({type: 'error', message: errorMsg}));
       });
-  }, [apiHost, accessTokenData]);
+  }, [apiHost, accessTokenData, dispatch]);
 
   return { isLoading, alert, makeRequest };
 };

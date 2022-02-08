@@ -1,10 +1,11 @@
 import React, { useReducer } from "react";
-import { Card, Col, Form, Row, Button, Spinner, Alert } from "react-bootstrap";
+import { Card, Col, Form, Row, Button, Spinner } from "react-bootstrap";
 import useApi from "../../hooks/use-api";
 
 import { authActions } from "../../store/auth";
 import { useDispatch } from "react-redux";
 import validateEMail from "../../helper/helper";
+import AlertMsg from "../AlertMsg";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -71,19 +72,16 @@ const Login = () => {
         password: formState.password.value,
       };
 
-      loginRequest({ url: "login", params: loginData }, (response) => {
+      loginRequest({ url: "login", type: 'post', params: loginData }, (response) => {
         if (
           response.hasOwnProperty("user") &&
-          typeof response.user != "undefined"
+          response.hasOwnProperty("access_token")
         ) {
           dispatch(
-            authActions.setLoggedInData({
-              login_status: true,
-              user: response.user,
-              token: response.access_token,
-              token_type: response.token_type,
-            })
+            authActions.setLoggedInData(response)
           );
+        }else{
+          console.error('Server Response Error.');
         }
       });
     }
@@ -161,11 +159,7 @@ const Login = () => {
                 )}
               </Form.Group>
             </Form>
-            {!alert.success && alert.error && (
-              <Alert variant="danger" className="mt-3">
-                {alert.error}
-              </Alert>
-            )}
+            <AlertMsg {...alert} />
             <hr />
             <div className="text-center">
               <Button
