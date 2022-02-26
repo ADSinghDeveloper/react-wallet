@@ -1,5 +1,6 @@
 import React from "react";
 import { useSelector, useDispatch } from "react-redux";
+import { Route, Switch, Redirect } from "react-router-dom";
 
 import Login from "./components/views/Login";
 import Register from "./components/views/Register";
@@ -7,7 +8,6 @@ import Dashboard from "./components/views/Dashboard";
 import Profile from "./components/views/Profile";
 import Layout from "./components/layout/Layout";
 import { getAuthProfile } from "./store/auth";
-import { Row, Spinner } from "react-bootstrap";
 // import MsgModal from "./components/MsgModal";
 import Notification from "./components/Notification";
 
@@ -15,8 +15,6 @@ let checkUserKey = true;
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
-  const signUp = useSelector((state) => state.auth.signUp);
-  const profilePage = useSelector((state) => state.auth.profile);
   const dispatch = useDispatch();
 
   if (checkUserKey && !isLoggedIn) {
@@ -26,23 +24,21 @@ function App() {
 
   return (
     <>
-      {isLoggedIn == null && (
-        <div className="auth-box text-center">
-          <Row className="justify-content-md-center">
-            <Spinner animation="grow" variant="dark" />
-          </Row>
-        </div>
-      )}
-      {isLoggedIn && (
-        <Layout>
-          {!profilePage && <Dashboard />}
-          {profilePage && <Profile />}
-        </Layout>
+      {isLoggedIn && (<Layout>
+        <Switch>
+          <Route path="/" exact><Dashboard /></Route>
+          <Route path="/profile"><Profile /></Route>
+          <Redirect to="/" />
+        </Switch>
+      </Layout>
       )}
       {isLoggedIn === false && (
         <div className="auth-box">
-          {!signUp && <Login />}
-          {signUp && <Register />}
+          <Switch>
+            <Route path="/login"><Login /></Route>
+            <Route path="/register"><Register /></Route>
+            <Redirect to="login" />
+          </Switch>
         </div>
       )}
       <Notification />

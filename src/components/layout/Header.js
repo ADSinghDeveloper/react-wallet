@@ -1,6 +1,8 @@
 import React from "react";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
+import { NavLink } from "react-router-dom";
+
 import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
 
@@ -15,20 +17,11 @@ const Header = () => {
       });
   };
 
-  const goToProfileHandler = () => {
-    dispatch(authActions.toProfile());
-  };
-
-  const goToDashboardHandler = (event) => {
-    event.preventDefault();
-    dispatch(authActions.toDashboard());
-  };
-
   return (
     <Navbar bg="dark" variant="dark" expand="lg" sticky="top">
       <Container>
-        <Navbar.Brand as="a" href="#" onClick={goToDashboardHandler}>
-          Wallet
+        <Navbar.Brand as="span">
+          <NavLink to="/" className="navbar-brand">Wallet</NavLink>
         </Navbar.Brand>
         <Navbar.Toggle aria-controls="responsive-navbar-nav" />
         <Navbar.Collapse
@@ -36,10 +29,9 @@ const Header = () => {
           className="justify-content-end"
         >
           <Nav>
+            <NavLink to="/profile" className="nav-link">Profile</NavLink>
             <NavDropdown title={authUserName} id="collasible-nav-dropdown">
-              <NavDropdown.Item onClick={goToProfileHandler}>
-                Profile
-              </NavDropdown.Item>
+              <NavLink to="/profile" className="dropdown-item">Profile</NavLink>
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={logoutHandler}>
                 Logout

@@ -6,6 +6,7 @@ import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
 import validateEMail from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
+import { useHistory } from "react-router-dom";
 
 const formReducer = (state, action) => {
   const PSW_LENGTH = 6;
@@ -82,6 +83,7 @@ const formReducer = (state, action) => {
 const Profile = () => {
   const authUser = useSelector(state => state.auth.authUser);
   const dispatch = useDispatch();
+  const history = useHistory();
   const defaultForm = {
     id: { value: authUser.id },
     email: { value: authUser.email },
@@ -130,7 +132,6 @@ const Profile = () => {
         new_psw: formState.new_password.value,
         conf_psw: formState.confirm_password.value,
       };
-// console.log(profileData);return;
       profileUpdateRequest({
         type: 'patch',
         url: 'save_profile',
@@ -144,7 +145,7 @@ const Profile = () => {
             authActions.updateAuthUser({ user: response.user })
           );
           formDispatcher({ type: "RESET" });
-          // dispatch(authActions.toDashboard());
+          history.push('/');
         } else {
           console.warn(response);
         }

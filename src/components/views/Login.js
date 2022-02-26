@@ -1,7 +1,8 @@
 import React, { useReducer } from "react";
 import { Card, Col, Form, Row, Button, Spinner } from "react-bootstrap";
-import useApi from "../../hooks/use-api";
+import { NavLink } from "react-router-dom";
 
+import useApi from "../../hooks/use-api";
 import { authActions } from "../../store/auth";
 import { useDispatch } from "react-redux";
 import validateEMail from "../../helper/helper";
@@ -87,10 +88,6 @@ const Login = () => {
     }
   };
 
-  const registerHandler = () => {
-    dispatch(authActions.toRegister());
-  }
-
   return (
     <Row className="justify-content-md-center">
       <Col lg={12}>
@@ -162,14 +159,7 @@ const Login = () => {
             <AlertMsg {...alert} />
             <hr />
             <div className="text-center">
-              <Button
-                variant="link"
-                className="text-decoration-none"
-                disabled={isLoading}
-                onClick={registerHandler}
-              >
-                Create Your Wallet Account
-              </Button>
+              <NavLink to="/register" className="text-decoration-none">Create Your Wallet Account</NavLink>
             </div>
           </Card.Body>
         </Card>

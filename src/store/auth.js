@@ -6,8 +6,6 @@ const initialState = {
   isLoggedIn: null,
   accessToken: { token: "", type: "" },
   authUser: { name: "" },
-  signUp: false,
-  profile: false,
 };
 
 const rwamKey = "rwam";
@@ -24,7 +22,6 @@ const authSlice = createSlice({
   reducers: {
     setLoggedInData: (state, action) => {
       state.isLoggedIn = true;
-      state.signUp = false;
       state.authUser = action.payload.user;
       state.accessToken = {
         token: action.payload.access_token,
@@ -35,24 +32,12 @@ const authSlice = createSlice({
     updateAuthUser: (state, action) => {
       state.authUser = action.payload.user;
     },
-    logout: (state) => {
+    logout: () => {
       delete window.rwam;
       return { ...initialState, isLoggedIn: false };
     },
     notLogged: (state) => {
       state.isLoggedIn = false;
-    },
-    toRegister: (state) => {
-      state.signUp = true;
-    },
-    toLogin: (state) => {
-      state.signUp = false;
-    },
-    toProfile: (state) => {
-      state.profile = true;
-    },
-    toDashboard: (state) => {
-      state.profile = false;
     },
   },
 });
@@ -64,7 +49,6 @@ export const getAuthProfile = () => {
     const authKey = JSON.parse(localStorage.getItem(rwamKey));
 
     if (authKey != null) {
-      // typeof authKey === 'object'
       const { makeRequest: authProfileRequest } = useApi();
       localStorage.removeItem(rwamKey);
 

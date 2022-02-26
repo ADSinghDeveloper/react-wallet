@@ -1,5 +1,5 @@
 import React, { Fragment } from "react";
-import { Container, Col } from "react-bootstrap";
+import { Row, Spinner, Container, Col } from "react-bootstrap";
 import { useSelector } from "react-redux";
 import Header from "./Header";
 
@@ -12,6 +12,13 @@ const Layout = (props) => {
       <Container>
         <Col lg={12} className="main-content">{props.children}</Col>
       </Container>
+      {isLoggedIn == null && (
+        <div className="auth-box text-center">
+          <Row className="justify-content-md-center">
+            <Spinner animation="grow" variant="dark" />
+          </Row>
+        </div>
+      )}
     </Fragment>
   );
 };

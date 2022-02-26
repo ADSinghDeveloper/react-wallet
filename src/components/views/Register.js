@@ -1,5 +1,6 @@
 import React, { useReducer, useState } from "react";
 import { Card, Col, Form, Row, Button, Spinner } from "react-bootstrap";
+import { NavLink } from "react-router-dom";
 
 import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
@@ -122,12 +123,7 @@ const Register = () => {
             typeof response.user != "undefined"
           ) {
             dispatch(
-              authActions.setLoggedInData({
-                login_status: true,
-                user: response.user,
-                token: response.access_token,
-                token_type: response.token_type,
-              })
+              authActions.setLoggedInData(response)
             );
           } else {
             if (response.hasOwnProperty("email")) {
@@ -140,10 +136,6 @@ const Register = () => {
       );
     }
   };
-
-  const loginHandler = () => {
-    dispatch(authActions.toLogin());
-  }
 
   return (
     <Row className="justify-content-md-center">
@@ -259,14 +251,7 @@ const Register = () => {
             )}
             <Card.Text className="text-center">
               Have an account? <br />
-              <Button
-                variant="link"
-                disabled={isLoading}
-                onClick={loginHandler}
-                className="text-decoration-none"
-              >
-                Login
-              </Button>
+              <NavLink to="/login" className="text-decoration-none">Login</NavLink>
             </Card.Text>
           </Card.Body>
         </Card>
