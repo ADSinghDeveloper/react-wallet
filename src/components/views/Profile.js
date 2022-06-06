@@ -248,7 +248,7 @@ const Profile = () => {
                   <Spinner animation="border" variant="primary" />
                 )}
                 {!isLoading && (
-                  <Button variant="primary" type="submit" disabled={formState.isValid === false}>
+                  <Button variant="primary" type="submit" disabled={formState.isValid !== true}>
                     Save
                   </Button>
                 )}
