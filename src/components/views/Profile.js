@@ -6,7 +6,7 @@ import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
 import validateEMail from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
-import { useHistory } from "react-router-dom";
+// import { useHistory } from "react-router-dom";
 
 const formReducer = (state, action) => {
   const PSW_LENGTH = 6;
@@ -83,7 +83,7 @@ const formReducer = (state, action) => {
 const Profile = () => {
   const authUser = useSelector(state => state.auth.authUser);
   const dispatch = useDispatch();
-  const history = useHistory();
+  // const history = useHistory();
   const defaultForm = {
     id: { value: authUser.id },
     email: { value: authUser.email },
@@ -91,7 +91,7 @@ const Profile = () => {
     current_password: { value: "", isValid: null },
     new_password: { value: "", isValid: null },
     confirm_password: { value: "", isValid: null },
-    isValid: false,
+    isValid: true,
   };
   const [formState, formDispatcher] = useReducer(formReducer, defaultForm);
   const { isLoading, alert, makeRequest: profileUpdateRequest } = useApi();
@@ -145,7 +145,7 @@ const Profile = () => {
             authActions.updateAuthUser({ user: response.user })
           );
           formDispatcher({ type: "RESET" });
-          history.push('/');
+          // history.push('/');
         } else {
           console.warn(response);
         }
@@ -192,7 +192,7 @@ const Profile = () => {
               <Form.Group className="mb-2 form-floating" controlId="current_password">
                 <Form.Control
                   type="password"
-                  placeholder="Current Password"
+                  placeholder="Password"
                   value={formState.current_password.value}
                   onChange={pswHandler}
                   onBlur={pswHandler}
