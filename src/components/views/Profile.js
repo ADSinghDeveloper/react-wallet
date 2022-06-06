@@ -91,7 +91,7 @@ const Profile = () => {
     current_password: { value: "", isValid: null },
     new_password: { value: "", isValid: null },
     confirm_password: { value: "", isValid: null },
-    isValid: true,
+    isValid: null,
   };
   const [formState, formDispatcher] = useReducer(formReducer, defaultForm);
   const { isLoading, alert, makeRequest: profileUpdateRequest } = useApi();
@@ -248,7 +248,7 @@ const Profile = () => {
                   <Spinner animation="border" variant="primary" />
                 )}
                 {!isLoading && (
-                  <Button variant="primary" type="submit" disabled={!formState.isValid}>
+                  <Button variant="primary" type="submit" disabled={formState.isValid === false}>
                     Save
                   </Button>
                 )}
