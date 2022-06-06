@@ -47,7 +47,7 @@ const formReducer = (state, action) => {
         },
         confirm_password: {
           value: state.confirm_password.value,
-          isValid: state.confirm_password.value.trim().length > PSW_LENGTH,
+          isValid: state.confirm_password.isValid !== null && state.confirm_password.value === action.value,
         },
       };
       break;
