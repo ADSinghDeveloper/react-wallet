@@ -1,5 +1,5 @@
 import React from "react";
-import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
+import { Container, Navbar, Nav, NavDropdown, NavItem } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
 
@@ -29,14 +29,15 @@ const Header = () => {
           className="justify-content-end"
         >
           <Nav>
-            <NavLink to="/profile" className="nav-link">Profile</NavLink>
-            <NavDropdown title={authUserName} id="collasible-nav-dropdown">
+            <NavLink to="/profile" className="nav-link">{authUserName}</NavLink>
+            <NavItem onClick={logoutHandler} className="nav-link">Logout</NavItem>
+            {/* <NavDropdown title={authUserName} id="collasible-nav-dropdown">
               <NavLink to="/profile" className="dropdown-item">Profile</NavLink>
               <NavDropdown.Divider />
               <NavDropdown.Item onClick={logoutHandler}>
                 Logout
               </NavDropdown.Item>
-            </NavDropdown>
+            </NavDropdown> */}
           </Nav>
         </Navbar.Collapse>
       </Container>

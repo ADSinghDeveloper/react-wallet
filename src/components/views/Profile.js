@@ -15,8 +15,9 @@ const formReducer = (state, action) => {
       state = {
         ...state,
         name: {
+          orig: state.name.orig,
           value: action.value,
-          isValid: action.value.trim().length > 2,
+          isValid: state.name.orig === action.value.trim()? null: action.value.trim().length > 2,
         },
       };
       break;
@@ -34,7 +35,7 @@ const formReducer = (state, action) => {
           ...state,
           current_password: {
             value: action.value.trim(),
-            isValid: action.value.trim().length >= PSW_LENGTH,
+            isValid: action.value.trim().length === 0 && (state.name.isValid === null || state.new_password.isValid === null)? null : action.value.trim().length >= PSW_LENGTH,
           },
         };
         break;
@@ -43,11 +44,11 @@ const formReducer = (state, action) => {
         ...state,
         new_password: {
           value: action.value.trim(),
-          isValid: action.value.trim().length > PSW_LENGTH,
+          isValid: action.value.trim().length === 0? null : action.value.trim().length > PSW_LENGTH,
         },
         confirm_password: {
           value: state.confirm_password.value,
-          isValid: state.confirm_password.isValid !== null && state.confirm_password.value === action.value,
+          isValid: action.value.trim().length === 0? null : state.confirm_password.isValid !== null && state.confirm_password.value === action.value,
         },
       };
       break;
@@ -56,7 +57,7 @@ const formReducer = (state, action) => {
           ...state,
           confirm_password: {
             value: action.value,
-            isValid:
+            isValid: state.new_password.value.length === 0? null :
               state.new_password.isValid === true &&
               state.new_password.value === action.value,
           },
@@ -65,6 +66,7 @@ const formReducer = (state, action) => {
         case "RESET":
           state = {
             ...state,
+            name: {...state.name, orig: state.name.value},
             current_password: { value: "", isValid: null },
             new_password: { value: "", isValid: null },
             confirm_password: { value: "", isValid: null },
@@ -87,7 +89,7 @@ const Profile = () => {
   const defaultForm = {
     id: { value: authUser.id },
     email: { value: authUser.email },
-    name: { value: authUser.name, isValid: null },
+    name: { orig: authUser.name, value: authUser.name, isValid: null },
     current_password: { value: "", isValid: null },
     new_password: { value: "", isValid: null },
     confirm_password: { value: "", isValid: null },
