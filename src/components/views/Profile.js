@@ -1,11 +1,12 @@
 import React, { useReducer } from "react";
-import { Card, Col, Row, Form, Spinner, Button } from "react-bootstrap";
+import { Form, Spinner, Button } from "react-bootstrap";
 
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
 import validateEMail from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
+// import CardLayout from "../layout/CardLayout";
 // import { useHistory } from "react-router-dom";
 
 const formReducer = (state, action) => {
@@ -82,7 +83,7 @@ const formReducer = (state, action) => {
   };
 };
 
-const Profile = () => {
+const Profile = (props) => {
   const authUser = useSelector(state => state.auth.authUser);
   const dispatch = useDispatch();
   // const history = useHistory();
@@ -147,6 +148,7 @@ const Profile = () => {
             authActions.updateAuthUser({ user: response.user })
           );
           formDispatcher({ type: "RESET" });
+          props.onClose();
           // history.push('/');
         } else {
           console.warn(response);
@@ -158,110 +160,97 @@ const Profile = () => {
     }
   }
 
-  return (
-    <Row className="justify-content-md-center">
-      <Col lg={6}>
-        <Card>
-          <Card.Header>
-            <Card.Title as="h4" className="text-primary">
-              Profile
-            </Card.Title>
-          </Card.Header>
-          <Card.Body className="pb-4">
-            <Form onSubmit={submitHandler}>
-              <Form.Group className="mb-2 form-floating" controlId="name">
-                <Form.Control
-                  type="text"
-                  placeholder="Name"
-                  value={formState.name.value}
-                  onChange={nameHandler}
-                  onBlur={nameHandler}
-                  tabIndex={1}
-                  className={
-                    formState.name.isValid != null
-                      ? formState.name.isValid
-                        ? "is-valid"
-                        : "is-invalid"
-                      : ""
-                  }
-                />
-                <Form.Label>Name</Form.Label>
-              </Form.Group>
-              <Form.Group className="mb-2 form-floating" controlId="email">
-                <Form.Control type="email" placeholder="Email" value={formState.email.value} readOnly />
-                <Form.Label>Email</Form.Label>
-              </Form.Group>
-              <Form.Group className="mb-2 form-floating" controlId="current_password">
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  value={formState.current_password.value}
-                  onChange={pswHandler}
-                  onBlur={pswHandler}
-                  className={
-                    formState.current_password.isValid != null
-                      ? formState.current_password.isValid
-                        ? "is-valid"
-                        : "is-invalid"
-                      : ""
-                  }
-                />
-                <Form.Label>Current Password</Form.Label>
-              </Form.Group>
-              <Form.Group className="mb-2 form-floating" controlId="new_password">
-                <Form.Control
-                  type="password"
-                  placeholder="New Password"
-                  value={formState.new_password.value}
-                  onChange={npswHandler}
-                  onBlur={npswHandler}
-                  className={
-                    formState.new_password.isValid != null
-                      ? formState.new_password.isValid
-                        ? "is-valid"
-                        : "is-invalid"
-                      : ""
-                  }
-                />
-                <Form.Label>New Password</Form.Label>
-              </Form.Group>
-              <Form.Group
-                className="mb-2 form-floating"
-                controlId="confirm_password"
-              >
-                <Form.Control
-                  type="password"
-                  placeholder="Confirm Password"
-                  value={formState.confirm_password.value}
-                  onChange={cpswHandler}
-                  onBlur={cpswHandler}
-                  className={
-                    formState.confirm_password.isValid != null
-                      ? formState.confirm_password.isValid
-                        ? "is-valid"
-                        : "is-invalid"
-                      : ""
-                  }
-                />
-                <Form.Label>Confirm Password</Form.Label>
-              </Form.Group>
-              <Form.Group className="mt-4 text-center">
-                {isLoading && !alert.success && (
-                  <Spinner animation="border" variant="primary" />
-                )}
-                {!isLoading && (
-                  <Button variant="primary" type="submit" disabled={formState.isValid !== true}>
-                    Save
-                  </Button>
-                )}
-              </Form.Group>
-            </Form>
-            <AlertMsg {...alert} />
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
-  );
+  return (<>
+    <Form onSubmit={submitHandler}>
+      <Form.Group className="mb-2 form-floating" controlId="name">
+        <Form.Control
+          type="text"
+          placeholder="Name"
+          value={formState.name.value}
+          onChange={nameHandler}
+          onBlur={nameHandler}
+          tabIndex={1}
+          className={
+            formState.name.isValid != null
+              ? formState.name.isValid
+                ? "is-valid"
+                : "is-invalid"
+              : ""
+          }
+        />
+        <Form.Label>Name</Form.Label>
+      </Form.Group>
+      <Form.Group className="mb-2 form-floating" controlId="email">
+        <Form.Control type="email" placeholder="Email" value={formState.email.value} readOnly />
+        <Form.Label>Email</Form.Label>
+      </Form.Group>
+      <Form.Group className="mb-2 form-floating" controlId="current_password">
+        <Form.Control
+          type="password"
+          placeholder="Password"
+          value={formState.current_password.value}
+          onChange={pswHandler}
+          onBlur={pswHandler}
+          className={
+            formState.current_password.isValid != null
+              ? formState.current_password.isValid
+                ? "is-valid"
+                : "is-invalid"
+              : ""
+          }
+        />
+        <Form.Label>Current Password</Form.Label>
+      </Form.Group>
+      <Form.Group className="mb-2 form-floating" controlId="new_password">
+        <Form.Control
+          type="password"
+          placeholder="New Password"
+          value={formState.new_password.value}
+          onChange={npswHandler}
+          onBlur={npswHandler}
+          className={
+            formState.new_password.isValid != null
+              ? formState.new_password.isValid
+                ? "is-valid"
+                : "is-invalid"
+              : ""
+          }
+        />
+        <Form.Label>New Password</Form.Label>
+      </Form.Group>
+      <Form.Group
+        className="mb-2 form-floating"
+        controlId="confirm_password"
+      >
+        <Form.Control
+          type="password"
+          placeholder="Confirm Password"
+          value={formState.confirm_password.value}
+          onChange={cpswHandler}
+          onBlur={cpswHandler}
+          className={
+            formState.confirm_password.isValid != null
+              ? formState.confirm_password.isValid
+                ? "is-valid"
+                : "is-invalid"
+              : ""
+          }
+        />
+        <Form.Label>Confirm Password</Form.Label>
+      </Form.Group>
+      <Form.Group className="mt-4 text-center">
+        {isLoading && !alert.success && (
+          <Spinner animation="border" variant="primary" />
+        )}
+        {!isLoading && (
+          <Button variant="primary" type="submit" disabled={formState.isValid !== true}>
+            Save
+          </Button>
+        )}
+      </Form.Group>
+    </Form>
+    <AlertMsg {...alert} />
+  </>);
 };
 
 export default Profile;

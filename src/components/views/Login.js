@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { Card, Col, Form, Row, Button, Spinner } from "react-bootstrap";
+import { Form, Button, Spinner } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import useApi from "../../hooks/use-api";
@@ -7,6 +7,7 @@ import { authActions } from "../../store/auth";
 import { useDispatch } from "react-redux";
 import validateEMail from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
+import CardLayout from "../layout/CardLayout";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -89,82 +90,72 @@ const Login = () => {
   };
 
   return (
-    <Row className="justify-content-md-center">
-      <Col lg={12}>
-        <Card>
-          <h3 className="card-header mb-4 fw-normal text-center text-primary">
-            Wallet LogIn
-          </h3>
-          <Card.Body className="pb-4">
-            {/* <Card.Title>Login</Card.Title> */}
-            <Form onSubmit={submitHandler}>
-              <Form.Group className="mb-2 form-floating" controlId="loginEmail">
-                <Form.Control
-                  type="email"
-                  placeholder="Enter email"
-                  value={formState.email.value}
-                  onChange={emailFieldHandler}
-                  onBlur={emailFieldHandler}
-                  className={
-                    formState.email.isValid != null
-                      ? formState.email.isValid
-                        ? "is-valid"
-                        : "is-invalid"
-                      : ""
-                  }
-                  title={
-                    formState.email.isValid != null
-                      ? formState.email.isValid
-                        ? ""
-                        : "Invalid Email"
-                      : ""
-                  }
-                />
-                <Form.Label>Email address</Form.Label>
-              </Form.Group>
-              <Form.Group
-                className="mb-2 form-floating"
-                controlId="loginPassword"
-              >
-                <Form.Control
-                  type="password"
-                  placeholder="Password"
-                  value={formState.password.value}
-                  onChange={passwordFieldHandler}
-                  onBlur={passwordFieldHandler}
-                  className={
-                    formState.password.isValid != null
-                      ? formState.password.isValid
-                        ? "is-valid"
-                        : "is-invalid"
-                      : ""
-                  }
-                />
-                <Form.Label>Password</Form.Label>
-              </Form.Group>
-              {/* <Form.Group className="mb-2 form-floating" controlId="stayLogin">
-                <Form.Check type="checkbox" label="Stay LoggedIn" />
-              </Form.Group> */}
-              <Form.Group className="mt-4 text-center">
-                {isLoading && !alert.success && (
-                  <Spinner animation="border" variant="primary" />
-                )}
-                {!isLoading && (
-                  <Button variant="primary" type="submit" className="w-100">
-                    Log In
-                  </Button>
-                )}
-              </Form.Group>
-            </Form>
-            <AlertMsg {...alert} />
-            <hr />
-            <div className="text-center">
-              <NavLink to="/register" className="text-decoration-none">Create Your Wallet Account</NavLink>
-            </div>
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
+    <CardLayout title="Login" classes="text-center">
+      <Form onSubmit={submitHandler}>
+        <Form.Group className="mb-2 form-floating" controlId="loginEmail">
+          <Form.Control
+            type="email"
+            placeholder="Enter email"
+            value={formState.email.value}
+            onChange={emailFieldHandler}
+            onBlur={emailFieldHandler}
+            className={
+              formState.email.isValid != null
+                ? formState.email.isValid
+                  ? "is-valid"
+                  : "is-invalid"
+                : ""
+            }
+            title={
+              formState.email.isValid != null
+                ? formState.email.isValid
+                  ? ""
+                  : "Invalid Email"
+                : ""
+            }
+          />
+          <Form.Label>Email address</Form.Label>
+        </Form.Group>
+        <Form.Group
+          className="mb-2 form-floating"
+          controlId="loginPassword"
+        >
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            value={formState.password.value}
+            onChange={passwordFieldHandler}
+            onBlur={passwordFieldHandler}
+            className={
+              formState.password.isValid != null
+                ? formState.password.isValid
+                  ? "is-valid"
+                  : "is-invalid"
+                : ""
+            }
+          />
+          <Form.Label>Password</Form.Label>
+        </Form.Group>
+        {/* <Form.Group className="mb-2 form-floating" controlId="stayLogin">
+          <Form.Check type="checkbox" label="Stay LoggedIn" />
+        </Form.Group> */}
+        <Form.Group className="mt-4 text-center">
+          {isLoading && !alert.success && (
+            <Spinner animation="border" variant="primary" />
+          )}
+          {!isLoading && (
+            <Button variant="primary" type="submit" className="w-100">
+              Log In
+            </Button>
+          )}
+        </Form.Group>
+      </Form>
+      <AlertMsg {...alert} />
+      <hr />
+      <div className="text-center">
+        <NavLink to="/register" className="text-decoration-none">Create Your Wallet Account</NavLink>
+      </div>
+    </CardLayout>
   );
 };
 

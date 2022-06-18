@@ -10,12 +10,14 @@ const Layout = (props) => {
     <Fragment>
       {isLoggedIn && <Header />}
       <Container>
-        <Col lg={12} className="main-content">{props.children}</Col>
+        <Row className="justify-content-md-center">
+          <Col lg={12} className="main-content">{props.children}</Col>
+        </Row>
       </Container>
       {isLoggedIn == null && (
         <div className="auth-box text-center">
           <Row className="justify-content-md-center">
-            <Spinner animation="grow" variant="dark" />
+            <Spinner animation="border" variant="dark" />
           </Row>
         </div>
       )}

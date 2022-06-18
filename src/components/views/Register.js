@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from "react";
-import { Card, Col, Form, Row, Button, Spinner } from "react-bootstrap";
+import { Card, Form, Button, Spinner } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import { authActions } from "../../store/auth";
@@ -7,6 +7,7 @@ import useApi from "../../hooks/use-api";
 import validateEMail from "../../helper/helper";
 import { useDispatch } from "react-redux";
 import AlertMsg from "../AlertMsg";
+import CardLayout from "../layout/CardLayout";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -138,125 +139,113 @@ const Register = () => {
   };
 
   return (
-    <Row className="justify-content-md-center">
-      <Col lg={12}>
-        <Card>
-          <h3 className="card-header mb-3 fw-normal text-center text-primary">
-            Wallet
-          </h3>
-          <Card.Body className="pb-4">
-            <Card.Title className="h3 mb-3 fw-normal text-center">
-              Create Your Wallet Account
-            </Card.Title>
-            {!regSuccess && (
-              <Form onSubmit={submitHandler}>
-                <Form.Group className="mb-2 form-floating" controlId="name">
-                  <Form.Control
-                    placeholder="Enter Your Name"
-                    value={formState.name.value}
-                    onChange={nameHandler}
-                    onBlur={nameHandler}
-                    className={
-                      formState.name.isValid != null
-                        ? formState.name.isValid
-                          ? "is-valid"
-                          : "is-invalid"
-                        : ""
-                    }
-                  />
-                  <Form.Label>Name</Form.Label>
-                </Form.Group>
-                <Form.Group className="mb-2 form-floating" controlId="email">
-                  <Form.Control
-                    type="email"
-                    placeholder="Enter Email"
-                    value={formState.email.value}
-                    className={
-                      formState.email.isValid != null || emailError
-                        ? formState.email.isValid && !emailError
-                          ? "is-valid"
-                          : "is-invalid"
-                        : ""
-                    }
-                    onChange={emailHandler}
-                    onBlur={emailHandler}
-                  />
-                  <Form.Label>Email address</Form.Label>
-                  {emailError && (
-                    <Form.Text className="text-danger">{emailError}</Form.Text>
-                  )}
-                </Form.Group>
-                <Form.Group className="mb-2 form-floating" controlId="password">
-                  <Form.Control
-                    type="password"
-                    placeholder="Password"
-                    value={formState.password.value}
-                    className={
-                      formState.password.isValid != null
-                        ? formState.password.isValid
-                          ? "is-valid"
-                          : "is-invalid"
-                        : ""
-                    }
-                    onChange={passwordHandler}
-                    onBlur={passwordHandler}
-                  />
-                  <Form.Label>Password</Form.Label>
-                </Form.Group>
-                <Form.Group
-                  className="mb-2 form-floating"
-                  controlId="confirm_password"
-                >
-                  <Form.Control
-                    type="password"
-                    placeholder="Confirm Password"
-                    value={formState.cpassword.value}
-                    className={
-                      formState.cpassword.isValid != null
-                        ? formState.cpassword.isValid
-                          ? "is-valid"
-                          : "is-invalid"
-                        : ""
-                    }
-                    onChange={cpasswordHandler}
-                    onBlur={cpasswordHandler}
-                  />
-                  <Form.Label>Confirm Password</Form.Label>
-                  <Form.Text className="text-muted">
-                    Minimum password length is 8 characters.
-                  </Form.Text>
-                </Form.Group>
-                <Form.Group className="mt-4 pb-3 text-center">
-                  {isLoading && !error && (
-                    <Spinner animation="border" variant="primary" />
-                  )}
-                  {!isLoading && (
-                    <Button
-                      variant="primary"
-                      type="submit"
-                      className="w-100"
-                      // disabled={!formState.isValid}
-                    >
-                      Create Account
-                    </Button>
-                  )}
-                </Form.Group>
-              </Form>
-            )}
-            <AlertMsg {...alert} />
-            {regSuccess && (
-              <div className="alert alert-success" role="alert">
-                You have been registered successfully.
-              </div>
-            )}
-            <Card.Text className="text-center">
-              Have an account? <br />
-              <NavLink to="/login" className="text-decoration-none">Login</NavLink>
-            </Card.Text>
-          </Card.Body>
-        </Card>
-      </Col>
-    </Row>
+  <CardLayout title="Create Your Wallet Account" classes="text-center">
+    {!regSuccess && (
+      <Form onSubmit={submitHandler}>
+        <Form.Group className="mb-2 form-floating" controlId="name">
+          <Form.Control
+            placeholder="Enter Your Name"
+            value={formState.name.value}
+            onChange={nameHandler}
+            onBlur={nameHandler}
+            className={
+              formState.name.isValid != null
+                ? formState.name.isValid
+                  ? "is-valid"
+                  : "is-invalid"
+                : ""
+            }
+          />
+          <Form.Label>Name</Form.Label>
+        </Form.Group>
+        <Form.Group className="mb-2 form-floating" controlId="email">
+          <Form.Control
+            type="email"
+            placeholder="Enter Email"
+            value={formState.email.value}
+            className={
+              formState.email.isValid != null || emailError
+                ? formState.email.isValid && !emailError
+                  ? "is-valid"
+                  : "is-invalid"
+                : ""
+            }
+            onChange={emailHandler}
+            onBlur={emailHandler}
+          />
+          <Form.Label>Email address</Form.Label>
+          {emailError && (
+            <Form.Text className="text-danger">{emailError}</Form.Text>
+          )}
+        </Form.Group>
+        <Form.Group className="mb-2 form-floating" controlId="password">
+          <Form.Control
+            type="password"
+            placeholder="Password"
+            value={formState.password.value}
+            className={
+              formState.password.isValid != null
+                ? formState.password.isValid
+                  ? "is-valid"
+                  : "is-invalid"
+                : ""
+            }
+            onChange={passwordHandler}
+            onBlur={passwordHandler}
+          />
+          <Form.Label>Password</Form.Label>
+        </Form.Group>
+        <Form.Group
+          className="mb-2 form-floating"
+          controlId="confirm_password"
+        >
+          <Form.Control
+            type="password"
+            placeholder="Confirm Password"
+            value={formState.cpassword.value}
+            className={
+              formState.cpassword.isValid != null
+                ? formState.cpassword.isValid
+                  ? "is-valid"
+                  : "is-invalid"
+                : ""
+            }
+            onChange={cpasswordHandler}
+            onBlur={cpasswordHandler}
+          />
+          <Form.Label>Confirm Password</Form.Label>
+          <Form.Text className="text-muted">
+            Minimum password length is 8 characters.
+          </Form.Text>
+        </Form.Group>
+        <Form.Group className="mt-4 pb-3 text-center">
+          {isLoading && !error && (
+            <Spinner animation="border" variant="primary" />
+          )}
+          {!isLoading && (
+            <Button
+              variant="primary"
+              type="submit"
+              className="w-100"
+              // disabled={!formState.isValid}
+            >
+              Create Account
+            </Button>
+          )}
+        </Form.Group>
+      </Form>
+    )}
+    <AlertMsg {...alert} />
+    {regSuccess && (
+      <div className="alert alert-success" role="alert">
+        You have been registered successfully.
+      </div>
+    )}
+    <Card.Text className="text-center">
+      Have an account? <br />
+      <NavLink to="/login" className="text-decoration-none">Login</NavLink>
+    </Card.Text>
+  </CardLayout>
   );
 };
 

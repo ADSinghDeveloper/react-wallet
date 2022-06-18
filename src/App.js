@@ -8,8 +8,9 @@ import Dashboard from "./components/views/Dashboard";
 import Profile from "./components/views/Profile";
 import Layout from "./components/layout/Layout";
 import { getAuthProfile } from "./store/auth";
-// import MsgModal from "./components/MsgModal";
 import Notification from "./components/Notification";
+import Colors from "./components/views/Colors";
+import { Col, Row } from "react-bootstrap";
 
 let checkUserKey = true;
 
@@ -28,21 +29,25 @@ function App() {
         <Switch>
           <Route path="/" exact><Dashboard /></Route>
           <Route path="/profile"><Profile /></Route>
+          <Route path="/colors"><Colors /></Route>
           <Redirect to="/" />
         </Switch>
       </Layout>
       )}
       {isLoggedIn === false && (
         <div className="auth-box">
-          <Switch>
-            <Route path="/login"><Login /></Route>
-            <Route path="/register"><Register /></Route>
-            <Redirect to="login" />
-          </Switch>
+          <Row className="justify-content-md-center">
+            <Col lg={12}>
+              <Switch>
+                <Route path="/login"><Login /></Route>
+                <Route path="/register"><Register /></Route>
+                <Redirect to="login" />
+              </Switch>
+            </Col>
+          </Row>
         </div>
       )}
       <Notification />
-      {/* <MsgModal /> */}
     </>
   );
 }
