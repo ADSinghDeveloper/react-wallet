@@ -1,5 +1,5 @@
 import React, { useReducer, useState } from "react";
-import { Card, Form, Button, Spinner } from "react-bootstrap";
+import { Card, Form, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import { authActions } from "../../store/auth";
@@ -8,6 +8,7 @@ import validateEMail from "../../helper/helper";
 import { useDispatch } from "react-redux";
 import AlertMsg from "../AlertMsg";
 import CardLayout from "../layout/CardLayout";
+import Loader from "../Loader";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -219,9 +220,7 @@ const Register = () => {
           </Form.Text>
         </Form.Group>
         <Form.Group className="mt-4 pb-3 text-center">
-          {isLoading && !error && (
-            <Spinner animation="border" variant="primary" />
-          )}
+          {isLoading && !error && <Loader type="primary" />}
           {!isLoading && (
             <Button
               variant="primary"

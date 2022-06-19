@@ -1,6 +1,7 @@
 import React, { Fragment } from "react";
-import { Row, Spinner, Container, Col } from "react-bootstrap";
+import { Row, Container, Col } from "react-bootstrap";
 import { useSelector } from "react-redux";
+import Loader from "../Loader";
 import Header from "./Header";
 
 const Layout = (props) => {
@@ -16,9 +17,7 @@ const Layout = (props) => {
       </Container>
       {isLoggedIn == null && (
         <div className="auth-box text-center">
-          <Row className="justify-content-md-center">
-            <Spinner animation="border" variant="dark" />
-          </Row>
+          <Loader />
         </div>
       )}
     </Fragment>

@@ -1,5 +1,5 @@
 import React, { useReducer } from "react";
-import { Form, Button, Spinner } from "react-bootstrap";
+import { Form, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import useApi from "../../hooks/use-api";
@@ -8,6 +8,7 @@ import { useDispatch } from "react-redux";
 import validateEMail from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
 import CardLayout from "../layout/CardLayout";
+import Loader from "../Loader";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -140,13 +141,9 @@ const Login = () => {
           <Form.Check type="checkbox" label="Stay LoggedIn" />
         </Form.Group> */}
         <Form.Group className="mt-4 text-center">
-          {isLoading && !alert.success && (
-            <Spinner animation="border" variant="primary" />
-          )}
+          {isLoading && !alert.success && <Loader type="primary" />}
           {!isLoading && (
-            <Button variant="primary" type="submit" className="w-100">
-              Log In
-            </Button>
+            <Button variant="primary" type="submit" className="w-100">Log In</Button>
           )}
         </Form.Group>
       </Form>
