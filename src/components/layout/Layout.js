@@ -9,12 +9,12 @@ const Layout = (props) => {
 
   return (
     <Fragment>
-      {isLoggedIn && <Header />}
+      {isLoggedIn && <><Header />
       <Container>
         <Row className="justify-content-md-center">
           <Col lg={12} className="main-content">{props.children}</Col>
         </Row>
-      </Container>
+      </Container></>}
       {isLoggedIn == null && (
         <div className="auth-box text-center">
           <Loader />

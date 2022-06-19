@@ -11,6 +11,7 @@ import { getAuthProfile } from "./store/auth";
 import Notification from "./components/Notification";
 import Colors from "./components/views/Colors";
 import { Col, Row } from "react-bootstrap";
+import Loader from "./components/Loader";
 
 let checkUserKey = true;
 
@@ -34,9 +35,10 @@ function App() {
         </Switch>
       </Layout>
       )}
+      {isLoggedIn === null && <div className="auth-box"><Loader /></div>}
       {isLoggedIn === false && (
         <div className="auth-box">
-          <Row className="justify-content-md-center">
+          <Row className="justify-content-center">
             <Col lg={12}>
               <Switch>
                 <Route path="/login"><Login /></Route>
