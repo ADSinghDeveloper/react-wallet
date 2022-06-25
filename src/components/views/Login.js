@@ -1,6 +1,6 @@
 import React, { useReducer } from "react";
-import { Form, Button } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { Form, Button, Card } from "react-bootstrap";
+import { NavLink /*, useHistory*/ } from "react-router-dom";
 
 import useApi from "../../hooks/use-api";
 import { authActions } from "../../store/auth";
@@ -47,6 +47,7 @@ const Login = () => {
     isValid: false,
   });
   const dispatch = useDispatch();
+  // const history = useHistory();
   const { isLoading, alert, makeRequest: loginRequest } = useApi();
 
   const emailFieldHandler = (event) => {
@@ -83,6 +84,7 @@ const Login = () => {
           dispatch(
             authActions.setLoggedInData(response)
           );
+          // history.push('/');
         }else{
           console.error('Server Response Error.');
         }
@@ -91,7 +93,7 @@ const Login = () => {
   };
 
   return (
-    <CardLayout title="Login" classes="text-center">
+    <CardLayout title="Login">
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-2 form-floating" controlId="loginEmail">
           <Form.Control
@@ -140,7 +142,7 @@ const Login = () => {
         {/* <Form.Group className="mb-2 form-floating" controlId="stayLogin">
           <Form.Check type="checkbox" label="Stay LoggedIn" />
         </Form.Group> */}
-        <Form.Group className="mt-4 text-center">
+        <Form.Group className="mt-4">
           {isLoading && !alert.success && <Loader type="primary" />}
           {!isLoading && (
             <Button variant="primary" type="submit" className="w-100">Log In</Button>
@@ -149,9 +151,10 @@ const Login = () => {
       </Form>
       <AlertMsg {...alert} />
       <hr />
-      <div className="text-center">
-        <NavLink to="/register" className="text-decoration-none">Create Your Wallet Account</NavLink>
-      </div>
+      <Card.Text>
+        Don't have an account? <br />
+        <NavLink to="/register" className="text-decoration-none">Create Account</NavLink>
+      </Card.Text>
     </CardLayout>
   );
 };

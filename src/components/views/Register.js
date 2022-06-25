@@ -140,7 +140,7 @@ const Register = () => {
   };
 
   return (
-  <CardLayout title="Create Your Wallet Account" classes="text-center">
+  <CardLayout title="Create Account">
     {!regSuccess && (
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-2 form-floating" controlId="name">
@@ -219,7 +219,7 @@ const Register = () => {
             Minimum password length is 8 characters.
           </Form.Text>
         </Form.Group>
-        <Form.Group className="mt-4 pb-3 text-center">
+        <Form.Group className="mt-4 pb-3">
           {isLoading && !error && <Loader type="primary" />}
           {!isLoading && (
             <Button

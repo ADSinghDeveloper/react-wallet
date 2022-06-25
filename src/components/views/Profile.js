@@ -7,8 +7,6 @@ import useApi from "../../hooks/use-api";
 import validateEMail from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
 import Loader from "../Loader";
-// import CardLayout from "../layout/CardLayout";
-// import { useHistory } from "react-router-dom";
 
 const formReducer = (state, action) => {
   const PSW_LENGTH = 6;
@@ -87,7 +85,6 @@ const formReducer = (state, action) => {
 const Profile = (props) => {
   const authUser = useSelector(state => state.auth.authUser);
   const dispatch = useDispatch();
-  // const history = useHistory();
   const defaultForm = {
     id: { value: authUser.id },
     email: { value: authUser.email },
@@ -150,7 +147,6 @@ const Profile = (props) => {
           );
           formDispatcher({ type: "RESET" });
           props.onClose();
-          // history.push('/');
         } else {
           console.warn(response);
         }

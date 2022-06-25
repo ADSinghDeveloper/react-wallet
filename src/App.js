@@ -18,6 +18,7 @@ let checkUserKey = true;
 
 function App() {
   const isLoggedIn = useSelector((state) => state.auth.isLoggedIn);
+  const isRootUser = useSelector((state) => state.auth.isRootUser);
   const dispatch = useDispatch();
 
   if (checkUserKey && !isLoggedIn) {
@@ -31,7 +32,8 @@ function App() {
         <Switch>
           <Route path="/" exact><Dashboard /></Route>
           <Route path="/profile"><Profile /></Route>
-          <Route path="/colors"><Colors /></Route>
+          <Route path="/colors">{isRootUser? <Colors /> : <PageNotFound />}</Route>
+          {/* <Route path="*"><PageNotFound /></Route> */}
           <Redirect to="/" />
         </Switch>
       </Layout>

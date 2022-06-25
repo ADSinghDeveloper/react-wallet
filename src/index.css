@@ -14,22 +14,11 @@ body {
 .center-box > div {
   width: 400px;
 }
-.card {
-  box-shadow: 0 1px 4px 0 rgb(0 0 0 / 14%);
-  border: 0;
-}
 .card-header, .modal-header {
-  box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%);
+  /* box-shadow: 0 4px 18px 0px rgb(0 0 0 / 12%), 0 7px 10px -5px rgb(0 0 0 / 15%); */
   padding: 0.8rem 1rem;
 }
-.main-content {
-  margin: 20px 0;
-}
-.main-content .card {
-  margin-bottom: 30px;
-}
-.card-header .card-title { margin: 0; font-weight: 400;}
-/* .main-content .card-header { box-shadow: none;} */
+.card-header .card-title { font-weight: 400;}
 .toast {
   font-size: 1rem;
 }
