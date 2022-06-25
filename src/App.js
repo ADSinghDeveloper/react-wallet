@@ -12,6 +12,7 @@ import Notification from "./components/Notification";
 import Colors from "./components/views/Colors";
 import { Col, Row } from "react-bootstrap";
 import Loader from "./components/Loader";
+import PageNotFound from "./components/views/PageNotFound";
 
 let checkUserKey = true;
 
@@ -35,10 +36,10 @@ function App() {
         </Switch>
       </Layout>
       )}
-      {isLoggedIn === null && <div className="auth-box"><Loader /></div>}
+      {isLoggedIn === null && <div className="center-box"><Loader /></div>}
       {isLoggedIn === false && (
-        <div className="auth-box">
-          <Row className="justify-content-center">
+        <div className="center-box">
+          <Row>
             <Col lg={12}>
               <Switch>
                 <Route path="/login"><Login /></Route>

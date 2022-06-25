@@ -11,6 +11,7 @@ import Profile from "../views/Profile";
 const Header = () => {
   const dispatch = useDispatch();
   const authUserName = useSelector((state) => state.auth.authUser.name);
+  const isRootUser = useSelector((state) => state.auth.isRootUser);
   const { makeRequest: logoutRequest } = useApi();
   const [showProfile, setShowProfile] = useState(false);
 
@@ -32,8 +33,10 @@ const Header = () => {
           className="justify-content-end"
         >
           <Nav>
-          <NavLink to="/" exact className="nav-link">Dashboard</NavLink>
-          <NavLink to="/colors" className="nav-link">Colors</NavLink>
+            <NavLink to="/" exact className="nav-link">Dashboard</NavLink>
+            {isRootUser && <>
+              <NavLink to="/colors" className="nav-link">Colors</NavLink>
+            </>}
             <NavDropdown title={authUserName} id="collasible-nav-dropdown">
               {/* <NavLink to="/profile" className="dropdown-item">{authUserName}</NavLink> */}
               <NavDropdown.Item onClick={() => setShowProfile(true)}>Profile</NavDropdown.Item>

@@ -16,7 +16,7 @@ const Layout = (props) => {
         </Row>
       </Container></>}
       {isLoggedIn == null && (
-        <div className="auth-box text-center">
+        <div className="center-box">
           <Loader />
         </div>
       )}

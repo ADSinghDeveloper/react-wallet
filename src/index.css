@@ -8,10 +8,10 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: silver;
 }
-.auth-box {
-  display: flex; align-items: center; justify-content: center; height: 100vh;
+.center-box {
+  display: flex; align-items: center; justify-content: center; text-align: center; height: 100vh;
 }
-.auth-box > div {
+.center-box > div {
   width: 400px;
 }
 .card {

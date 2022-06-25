@@ -4,6 +4,7 @@ import useApi from "../hooks/use-api";
 
 const initialState = {
   isLoggedIn: null,
+  isRootUser: null,
   accessToken: { token: "", type: "" },
   authUser: { name: "" },
 };
@@ -23,6 +24,7 @@ const authSlice = createSlice({
     setLoggedInData: (state, action) => {
       state.isLoggedIn = true;
       state.authUser = action.payload.user;
+      state.isRootUser = action.payload.user.id === 1;
       state.accessToken = {
         token: action.payload.access_token,
         type: action.payload.token_type,
@@ -34,10 +36,7 @@ const authSlice = createSlice({
     },
     logout: () => {
       delete window.rwam;
-      return { ...initialState, isLoggedIn: false };
-    },
-    notLogged: (state) => {
-      state.isLoggedIn = false;
+      return { ...initialState, isLoggedIn: false, isRootUser: false };
     },
   },
 });
@@ -69,7 +68,7 @@ export const getAuthProfile = () => {
         }
       );
     } else {
-      dispatch(authActions.notLogged());
+      dispatch(authActions.logout());
     }
   };
 };
