@@ -219,7 +219,7 @@ const Register = () => {
             Minimum password length is 8 characters.
           </Form.Text>
         </Form.Group>
-        <Form.Group className="mt-4 pb-3">
+        <Form.Group className="mt-4">
           {isLoading && !error && <Loader type="primary" />}
           {!isLoading && (
             <Button
@@ -240,9 +240,10 @@ const Register = () => {
         You have been registered successfully.
       </div>
     )}
+    <hr />
     <Card.Text className="text-center">
-      Have an account? <br />
-      <NavLink to="/login" className="text-decoration-none">Login</NavLink>
+      Have an account? &nbsp;
+      <NavLink to="/login" className="text-decoration-none">Login here.</NavLink>
     </Card.Text>
   </CardLayout>
   );

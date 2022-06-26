@@ -152,8 +152,8 @@ const Login = () => {
       <AlertMsg {...alert} />
       <hr />
       <Card.Text>
-        Don't have an account? <br />
-        <NavLink to="/register" className="text-decoration-none">Create Account</NavLink>
+        Don't have an account? &nbsp;
+        <NavLink to="/register" className="text-decoration-none">Create here.</NavLink>
       </Card.Text>
     </CardLayout>
   );
