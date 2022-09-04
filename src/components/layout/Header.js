@@ -16,7 +16,7 @@ const Header = () => {
   const [showProfile, setShowProfile] = useState(false);
 
   const logoutHandler = () => {
-    logoutRequest({url: "logout",type: "post"}, (response) => {
+    logoutRequest({url: "logout", method: "post"}, () => {
         dispatch(authActions.logout());
       });
   };

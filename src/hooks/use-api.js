@@ -1,6 +1,5 @@
 import { useCallback, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import axios from "axios";
 import { notificationActions } from "../store/notification";
 
 const useApi = () => {
@@ -10,36 +9,51 @@ const useApi = () => {
   const dispatch = useDispatch();
   const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
-  const makeRequest = useCallback((requestConfig, callBack) => {
+  const makeRequest = useCallback((request, callBack) => {
     setAlert({error: null, success: null});
     dispatch(notificationActions.close()); 
     setLoading(true);
-    const requestHeaders = {
-      'Authorization': requestConfig.url === 'profile'? `${requestConfig.token_type} ${requestConfig.token}` : `${accessTokenData.type} ${accessTokenData.token}`
+    let options = {
+      headers: {
+          "Accept": "application/json",
+          "Content-Type": "application/json;charset=UTF-8",
+          "Authorization": request.url === 'profile'? `${request.token_type} ${request.token}` : `${accessTokenData.type} ${accessTokenData.token}`
+        }
     };
-    axios({
-        method: requestConfig.type,
-        baseURL: apiHost, 
-        url: requestConfig.url,
-        data: requestConfig.params || {},
-        headers: requestHeaders || {},
-        withCredentials: true,
-      })
+
+    if (["post", "put", "patch", "delete"].indexOf(request.method?.toLowerCase()) >= 0) {
+      options.body = JSON.stringify(request.params || {});
+    }
+
+    options.method = request.method || 'get';
+
+    fetch(`${apiHost}${request.url}`, options)
+    .then(response => {
+      setLoading(false);
+      // console.log('1',response);
+      if (response.ok) {
+        return response.json();
+      }
+
+      setAlert({error: `${response.status}: ${response.statusText}`, success: false});
+      dispatch(notificationActions.send({type: 'error', message: `${response.status}: ${response.statusText}`}));
+      // throw Error(response.statusText)
+    })
       .then((response) => {
         setLoading(false);
-        // console.log(response);
-        if (response.status === 200) {
-          if (response.data.error) {
-            setAlert({error: response.data.error, success: false});
-            dispatch(notificationActions.send({type: 'error', message: response.data.error}));
+        // console.log('2',response);
+        if(response !== undefined){
+          if (response?.status === 'error') {
+            setAlert({error: response.message, success: false});
+            dispatch(notificationActions.send({type: 'error', message: response.message}));
           }else{
-            setAlert({error: false, success: response.data.success});
-            dispatch(notificationActions.send({type: 'success', message: response.data.success}));
-            callBack(response.data);
+            setAlert({error: false, success: response.success});
+            dispatch(notificationActions.send({type: 'success', message: response.success}));
+            callBack(response);
           }
         } else {
-          setAlert({error: response, success: false});
-          dispatch(notificationActions.send({type: 'error', message: response}));
+          setAlert({error: 'No Response.', success: false});
+          dispatch(notificationActions.send({type: 'error', message: 'No Response.'}));
         }
       })
       .catch((error) => {

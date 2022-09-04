@@ -76,7 +76,7 @@ const Login = () => {
         password: formState.password.value,
       };
 
-      loginRequest({ url: "login", type: 'post', params: loginData }, (response) => {
+      loginRequest({ url: "login", method: 'post', params: loginData }, (response) => {
         if (
           response.hasOwnProperty("user") &&
           response.hasOwnProperty("access_token")

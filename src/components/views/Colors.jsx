@@ -12,12 +12,13 @@ const Colors = () => {
   useEffect(() => {
     setColors([]);
     getColors({ url: "colors" }, (response) => {
-      setColors(response.data);
+      setColors(response);
     });
   }, [getColors]);
+
   return (
     <CardLayout isLoading={isLoading} title="Colors">
-      <Row lg={12}>
+      <Row>
         {colors.map((color, index) => (
           <Col key={index} lg={1} md={2} sm={2} xs={3}>
             <div

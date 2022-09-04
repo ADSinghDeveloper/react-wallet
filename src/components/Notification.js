@@ -7,7 +7,7 @@ const Notification = () => {
     const dispatch = useDispatch();
     const props = useSelector((state) => state.notification);
 
-    if(props.type === 'error' || props.message == null || props.message.length < 1){
+    if(props.message == null || props.message.length < 1){
         return false;
     }
 
