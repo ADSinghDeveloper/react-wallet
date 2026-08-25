@@ -5,8 +5,8 @@ import { NavLink /*, useHistory*/ } from "react-router-dom";
 import useApi from "../../hooks/use-api";
 import { authActions } from "../../store/auth";
 import { useDispatch } from "react-redux";
-import validateEMail from "../../helper/helper";
-import AlertMsg from "../AlertMsg";
+import { validateEMail} from "../../helper/helper";
+// import AlertMsg from "../AlertMsg";
 import CardLayout from "../layout/CardLayout";
 import Loader from "../Loader";
 
@@ -39,7 +39,7 @@ const formReducer = (state, action) => {
   };
 };
 
-const Login = () => {
+export default function Login() {
   const [formState, formDispatcher] = useReducer(formReducer, {
     email: { value: "", isValid: null, isExists: false },
     password: { value: "", isValid: null },
@@ -48,7 +48,7 @@ const Login = () => {
   });
   const dispatch = useDispatch();
   // const history = useHistory();
-  const { isLoading, alert, makeRequest: loginRequest } = useApi();
+  const { isLoading, makeRequest: loginRequest } = useApi(); // {alert}
 
   const emailFieldHandler = (event) => {
     formDispatcher({
@@ -86,7 +86,7 @@ const Login = () => {
           );
           // history.push('/');
         }else{
-          console.error('Server Response Error.');
+          console.error('Server Response Error: ', response);
         }
       });
     }
@@ -149,7 +149,7 @@ const Login = () => {
           )}
         </Form.Group>
       </Form>
-      <AlertMsg {...alert} />
+      {/* <AlertMsg {...alert} /> */}
       <hr />
       <Card.Text>
         Don't have an account? &nbsp;
@@ -158,5 +158,3 @@ const Login = () => {
     </CardLayout>
   );
 };
-
-export default Login;

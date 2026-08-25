@@ -1,21 +1,13 @@
 import { createSlice } from "@reduxjs/toolkit";
-
-import useApi from "../hooks/use-api";
+import { delBrowserAuthKey, setBrowserAuthKey } from "../helper/helper";
 
 const initialState = {
   isLoggedIn: null,
   isRootUser: null,
+  isAppLoaded: false,
   accessToken: { token: "", type: "" },
   authUser: { name: "" },
 };
-
-const rwamKey = "rwam";
-
-window.addEventListener("beforeunload", (e) => {
-  if (window.hasOwnProperty("rwam")) {
-    localStorage.setItem(rwamKey, JSON.stringify(window.rwam));
-  }
-});
 
 const authSlice = createSlice({
   name: "auth",
@@ -29,48 +21,20 @@ const authSlice = createSlice({
         token: action.payload.access_token,
         type: action.payload.token_type,
       };
-      window.rwam = state.accessToken;
+      if(action.appLoaded){
+        state.isAppLoaded = true;
+      }
+      setBrowserAuthKey(state.accessToken);
     },
     updateAuthUser: (state, action) => {
       state.authUser = action.payload.user;
     },
     logout: () => {
-      delete window.rwam;
+      delBrowserAuthKey();
       return { ...initialState, isLoggedIn: false, isRootUser: false };
     },
   },
 });
 
 export const authActions = authSlice.actions;
-
-export const getAuthProfile = () => {
-  return (dispatch) => {
-    const authKey = JSON.parse(localStorage.getItem(rwamKey));
-
-    if (authKey != null) {
-      const { makeRequest: authProfileRequest } = useApi();
-      localStorage.removeItem(rwamKey);
-
-      authProfileRequest(
-        { url: "profile", token: authKey.token, token_type: authKey.type },
-        (response) => {
-          if (typeof response === "object") {
-            dispatch(
-              authActions.setLoggedInData({
-                user: response,
-                access_token: authKey.token,
-                token_type: authKey.type,
-              })
-            );
-          } else {
-            console.error("Auth Profile Error.");
-          }
-        }
-      );
-    } else {
-      dispatch(authActions.logout());
-    }
-  };
-};
-
 export default authSlice.reducer;

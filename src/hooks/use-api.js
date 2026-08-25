@@ -4,13 +4,13 @@ import { notificationActions } from "../store/notification";
 
 const useApi = () => {
   const [isLoading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({error: null, success: null});
+  // const [alert, setAlert] = useState({error: null, success: null});
   const accessTokenData = useSelector(state => state.auth.accessToken);
   const dispatch = useDispatch();
   const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
   const makeRequest = useCallback((request, callBack) => {
-    setAlert({error: null, success: null});
+    // setAlert({error: null, success: null});
     dispatch(notificationActions.close()); 
     setLoading(true);
     let options = {
@@ -31,30 +31,29 @@ const useApi = () => {
     fetch(`${apiHost}${request.url}`, options)
     .then(response => {
       setLoading(false);
-      // console.log('1',response);
       if (response.ok) {
         return response.json();
       }
 
-      setAlert({error: `${response.status}: ${response.statusText}`, success: false});
+      // setAlert({error: `${response.status}: ${response.statusText}`, success: false});
       dispatch(notificationActions.send({type: 'error', message: `${response.status}: ${response.statusText}`}));
       // throw Error(response.statusText)
     })
       .then((response) => {
         setLoading(false);
-        // console.log('2',response);
         if(response !== undefined){
-          if (response?.status === 'error') {
-            setAlert({error: response.message, success: false});
+          if (response.status === 'error') {
+            // setAlert({error: response.message, success: false});
             dispatch(notificationActions.send({type: 'error', message: response.message}));
           }else{
-            setAlert({error: false, success: response.success});
+            // setAlert({error: false, success: response.success});
             dispatch(notificationActions.send({type: 'success', message: response.success}));
             callBack(response);
           }
         } else {
-          setAlert({error: 'No Response.', success: false});
-          dispatch(notificationActions.send({type: 'error', message: 'No Response.'}));
+          const errMsg = 'Username or Password is wrong. Please check and try again.';
+          // setAlert({error: errMsg, success: false});
+          dispatch(notificationActions.send({type: 'error', message: errMsg}));
         }
       })
       .catch((error) => {
@@ -64,9 +63,9 @@ const useApi = () => {
         if(error.hasOwnProperty("response") && error.response !== undefined){
           errorMsg = (error.response.status === 401) ? "Username/Password mismatched." : `${error.response.statusText}: ${error.response.data.message}`;
         }else{
-          errorMsg = 'Someting went wrong or could be a network error.';
+          errorMsg = 'Username or Password is wrong. Please check and try again.';
         }
-        setAlert({error: errorMsg, success: false});
+        // setAlert({error: errorMsg, success: false});
         dispatch(notificationActions.send({type: 'error', message: errorMsg}));
       });
   }, [apiHost, accessTokenData, dispatch]);

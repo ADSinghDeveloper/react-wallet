@@ -4,7 +4,7 @@ import { Form, Button } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
-import validateEMail from "../../helper/helper";
+import { validateEMail } from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
 import Loader from "../Loader";
 

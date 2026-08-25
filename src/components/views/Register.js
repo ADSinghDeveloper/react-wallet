@@ -4,7 +4,7 @@ import { NavLink } from "react-router-dom";
 
 import { authActions } from "../../store/auth";
 import useApi from "../../hooks/use-api";
-import validateEMail from "../../helper/helper";
+import { validateEMail } from "../../helper/helper";
 import { useDispatch } from "react-redux";
 import AlertMsg from "../AlertMsg";
 import CardLayout from "../layout/CardLayout";

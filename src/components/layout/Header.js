@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import { useState } from "react";
 import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
 import { useSelector, useDispatch } from "react-redux";
 import { NavLink } from "react-router-dom";
@@ -33,9 +33,9 @@ const Header = () => {
           className="justify-content-end"
         >
           <Nav>
-            <NavLink to="/" exact className="nav-link">Dashboard</NavLink>
+            {/* <NavLink to="/" exact className="nav-link">Dashboard</NavLink> */}
             {isRootUser && <>
-              <NavLink to="/colors" className="nav-link">Colors</NavLink>
+              {/* <NavLink to="/colors" className="nav-link">Colors</NavLink> */}
             </>}
             <NavDropdown title={authUserName} id="collasible-nav-dropdown">
               {/* <NavLink to="/profile" className="dropdown-item">{authUserName}</NavLink> */}
