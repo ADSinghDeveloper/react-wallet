@@ -1,14 +1,21 @@
-import React, { useReducer } from "react";
+import { useContext, useReducer, useState } from "react";
 import { Form, Button, Card } from "react-bootstrap";
-import { NavLink /*, useHistory*/ } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 
-import useApi from "../../hooks/use-api";
-import { authActions } from "../../store/auth";
-import { useDispatch } from "react-redux";
-import { validateEMail} from "../../helper/helper";
-// import AlertMsg from "../AlertMsg";
+import AuthContext from "../../store/auth-context";
+import { minPasswordLength, validateEMail} from "../../helper/helper";
 import CardLayout from "../layout/CardLayout";
 import Loader from "../Loader";
+import { loginUser } from "../../store/local-users";
+import AlertMsg from "../AlertMsg";
+
+// const dummyUser = {
+//     "user": {
+//         "id": 1,
+//         "name": "Dummy User",
+//         "email": "username@email.com",
+//     }
+// }
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -26,7 +33,7 @@ const formReducer = (state, action) => {
         ...state,
         password: {
           value: action.value.trim(),
-          isValid: action.value.trim().length > 5,
+          isValid: action.value.trim().length >= minPasswordLength ,
         },
       };
       break;
@@ -46,9 +53,12 @@ export default function Login() {
     stay_logged_in: { value: false },
     isValid: false,
   });
-  const dispatch = useDispatch();
+  const [alert, setAlert] = useState({error: null, alert_message: null});
+  const authCtx = useContext(AuthContext);
+  // const dispatch = useDispatch();
   // const history = useHistory();
-  const { isLoading, makeRequest: loginRequest } = useApi(); // {alert}
+  // const { isLoading, makeRequest: loginRequest } = useApi(); // {alert}
+  const [isLoading, setIsLoading] = useState(false);
 
   const emailFieldHandler = (event) => {
     formDispatcher({
@@ -71,24 +81,18 @@ export default function Login() {
     formDispatcher({ type: "PSW_VALIDATION", value: formState.password.value });
 
     if (formState.isValid) {
+      setIsLoading(true);
       let loginData = {
         email: formState.email.value,
         password: formState.password.value,
       };
 
-      loginRequest({ url: "login", method: 'post', params: loginData }, (response) => {
-        if (
-          response.hasOwnProperty("user") &&
-          response.hasOwnProperty("access_token")
-        ) {
-          dispatch(
-            authActions.setLoggedInData(response)
-          );
-          // history.push('/');
-        }else{
-          console.error('Server Response Error: ', response);
-        }
-      });
+      setIsLoading(false);
+      if(loginUser(loginData)){
+        authCtx.setLoggedInData({...loginData});
+      }else{
+        setAlert({error: "Incorrect Username or Password! Please try again."});
+      }
     }
   };
 
@@ -149,7 +153,7 @@ export default function Login() {
           )}
         </Form.Group>
       </Form>
-      {/* <AlertMsg {...alert} /> */}
+      <AlertMsg {...alert} />
       <hr />
       <Card.Text>
         Don't have an account? &nbsp;

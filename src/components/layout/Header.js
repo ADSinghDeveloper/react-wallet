@@ -1,53 +1,69 @@
-import { useState } from "react";
-import { Container, Navbar, Nav, NavDropdown } from "react-bootstrap";
-import { useSelector, useDispatch } from "react-redux";
+import { useContext, useState } from "react";
+import { Container, Navbar, Nav, NavLink as NavbarLink } from "react-bootstrap";
+import { BoxArrowRight, PersonCircle } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
 
-import { authActions } from "../../store/auth";
-import useApi from "../../hooks/use-api";
+import AuthContext from "../../store/auth-context";
 import Modal from "../Modal";
 import Profile from "../views/Profile";
 
 const Header = () => {
-  const dispatch = useDispatch();
-  const authUserName = useSelector((state) => state.auth.authUser.name);
-  const isRootUser = useSelector((state) => state.auth.isRootUser);
-  const { makeRequest: logoutRequest } = useApi();
+  const { logout } = useContext(AuthContext);
   const [showProfile, setShowProfile] = useState(false);
 
-  const logoutHandler = () => {
-    logoutRequest({url: "logout", method: "post"}, () => {
-        dispatch(authActions.logout());
-      });
-  };
-
-  return (<>
-    <Navbar bg="dark" variant="dark" expand="lg" sticky="top" className="shadow">
-      <Container>
-        <Navbar.Brand as="span">
-          <NavLink to="/" className="navbar-brand">Wallet</NavLink>
-        </Navbar.Brand>
-        <Navbar.Toggle aria-controls="responsive-navbar-nav" />
-        <Navbar.Collapse
-          id="responsive-navbar-nav"
-          className="justify-content-end"
-        >
-          <Nav>
-            {/* <NavLink to="/" exact className="nav-link">Dashboard</NavLink> */}
-            {isRootUser && <>
-              {/* <NavLink to="/colors" className="nav-link">Colors</NavLink> */}
-            </>}
-            <NavDropdown title={authUserName} id="collasible-nav-dropdown">
-              {/* <NavLink to="/profile" className="dropdown-item">{authUserName}</NavLink> */}
-              <NavDropdown.Item onClick={() => setShowProfile(true)}>Profile</NavDropdown.Item>
-              <NavDropdown.Divider />
-              <NavDropdown.Item onClick={logoutHandler}>Logout</NavDropdown.Item>
-            </NavDropdown>
-          </Nav>
-        </Navbar.Collapse>
-      </Container>
-    </Navbar>
-    <Modal show={showProfile} onClose={() => setShowProfile(false)} title="Profile"><Profile onClose={() => setShowProfile(false)} /></Modal></>
+  return (
+    <>
+      <Navbar
+        bg="dark"
+        variant="dark"
+        expand="lg"
+        sticky="top"
+        className="shadow"
+      >
+        <Container>
+          <Navbar.Brand as="span">
+            <NavLink to="/" className="navbar-brand">
+              Wallet
+            </NavLink>
+          </Navbar.Brand>
+          <Navbar.Toggle aria-controls="responsive-navbar-nav" />
+          <Navbar.Collapse
+            id="responsive-navbar-nav"
+            className="justify-content-end"
+          >
+            <Nav>
+                <NavbarLink href="#"
+                  onClick={() => setShowProfile(true)}
+                >
+                  <PersonCircle />
+                </NavbarLink>
+                <NavbarLink href="#" onClick={logout} className="nav-link">
+                  <BoxArrowRight />
+                </NavbarLink>
+                {/* <NavLink to="/" exact className="nav-link">Dashboard</NavLink> */}
+                {/* <NavLink to="/profile" className="dropdown-item">{authUserName}</NavLink> */}
+              {/* <NavDropdown
+                title={<PersonCircle />}
+                id="collasible-nav-dropdown"
+                >
+                <NavDropdown.Item onClick={() => setShowProfile(true)}>
+                  Profile
+                </NavDropdown.Item>
+                <NavDropdown.Divider />
+                <NavDropdown.Item onClick={logout}>Logout</NavDropdown.Item>
+              </NavDropdown> */}
+            </Nav>
+          </Navbar.Collapse>
+        </Container>
+      </Navbar>
+      <Modal
+        show={showProfile}
+        onClose={() => setShowProfile(false)}
+        title="Profile"
+      >
+        <Profile onClose={() => setShowProfile(false)} />
+      </Modal>
+    </>
   );
 };
 

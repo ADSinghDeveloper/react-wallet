@@ -1,75 +1,63 @@
-import React, { useState } from "react";
+import { createContext, useReducer } from "react";
 
-import useApi from "../hooks/use-api";
-
-const AuthContext = React.createContext({
-  isLoggedIn: false,
-  accessToken: { token: "", type: "" },
+const initialState = {
+  isLoggedIn: null,
+  // accessToken: { token: "", type: "" },
   authUser: { name: "" },
-  setLoggedInData: (status, user, token, tokenType) => {},
-  logout: () => {},
-  toRegister: () => {},
-  toLogin: () => {},
-  signUp: false,
-});
-
-export const AuthContextProvider = (props) => {
-  const [isLogin, setIsLogin] = useState(false);
-  const [getRegisterFlag, setGetRegisterFlag] = useState(false);
-  const [loggedInUser, setLoggedInUser] = useState("");
-  const [accessTokenData, setAccessTokenData] = useState({
-    token: "",
-    type: "",
-  });
-
-  const { makeRequest: logoutRequest } = useApi();
-
-  const logoutHandler = () => {
-    logoutRequest(
-      {
-        url: "logout",
-        type: "post",
-        headers: {
-          Authorization: `${accessTokenData.type} ${accessTokenData.token}`,
-        },
-      },
-      (response) => {
-        console.log(response.message);
-        setLoggedInData(false, {}, null, null);
-      }
-    );
-  };
-
-  const setLoggedInData = (status, user, token, tokenType) => {
-    setIsLogin(status);
-    setLoggedInUser(user);
-    setAccessTokenData({ token: token, type: tokenType });
-  };
-
-  const getRegisterHandler = () => {
-    setGetRegisterFlag(true);
-  }
-
-  const getLoginHandler = () => {
-    setGetRegisterFlag(false);
-  }
-
-  const authCtx = {
-    isLoggedIn: isLogin,
-    accessToken: accessTokenData,
-    authUser: loggedInUser,
-    setLoggedInData: setLoggedInData,
-    logout: logoutHandler,
-    toRegister: getRegisterHandler,
-    toLogin: getLoginHandler,
-    signUp: getRegisterFlag
-  };
-
-  return (
-    <AuthContext.Provider value={authCtx}>
-      {props.children}
-    </AuthContext.Provider>
-  );
 };
 
+const AuthContext = createContext({
+  ...initialState,
+  setLoggedInData: (loginData) => {},
+  // register: () => {},
+  // login: () => {},
+  logout: () => {},
+});
+
+function authReducer(state,action){
+  if(action.type === "LOGIN"){
+    state = {
+      ...state,
+      isLoggedIn: true,
+      authUser: {...action.payload.user},
+      // accessToken: {
+      //   token: action.payload.access_token,
+      //   type: action.payload.token_type,
+      // }
+    }
+  }
+  if(action.type === "LOGOUT"){
+    state = { ...initialState, isLoggedIn: false };
+  }
+      // updateAuthUser: (state, action) => {
+      //   state.authUser = action.payload.user;
+      // }
+  return state;
+}
+// Context can be used without useReducer. Reducer is being used to prevent multiple useState hook.
+export function AuthContextProvider ({children}) {
+  const [authState, dispatchAuthStateAction] = useReducer(authReducer,{...initialState});
+  
+  const authContextState = {
+    ...authState, // getting updated state from reducer.
+
+    setLoggedInData: (loginData) => {
+      dispatchAuthStateAction({
+        type: "LOGIN",
+        payload: loginData,
+      });
+    },
+    logout: () => {
+      dispatchAuthStateAction({
+        type: "LOGOUT",
+      });
+    },
+  }
+
+  return (
+    <AuthContext.Provider value={authContextState}>
+      {children}
+    </AuthContext.Provider>
+  );
+}
 export default AuthContext;

@@ -9,15 +9,18 @@ import App from "./App";
 import { Provider } from "react-redux";
 import store from "./store/redux";
 import reportWebVitals from "./reportWebVitals";
+import { AuthContextProvider } from "./store/auth-context";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
   <React.StrictMode>
     <Provider store={store}>
       <BrowserRouter>
-        <App />
+        <AuthContextProvider>
+          <App />
+        </AuthContextProvider>
       </BrowserRouter>
     </Provider>
-  </React.StrictMode>
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function

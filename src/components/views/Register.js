@@ -1,14 +1,13 @@
-import React, { useReducer, useState } from "react";
+import { useContext, useReducer, useState } from "react";
 import { Card, Form, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
-import { authActions } from "../../store/auth";
-import useApi from "../../hooks/use-api";
-import { validateEMail } from "../../helper/helper";
-import { useDispatch } from "react-redux";
+import { minPasswordLength, validateEMail } from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
 import CardLayout from "../layout/CardLayout";
 import Loader from "../Loader";
+import AuthContext from "../../store/auth-context";
+import { addUser } from "../../store/local-users";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -35,7 +34,7 @@ const formReducer = (state, action) => {
         ...state,
         password: {
           value: action.value.trim(),
-          isValid: action.value.trim().length > 5,
+          isValid: action.value.trim().length >= minPasswordLength,
         },
       };
       break;
@@ -72,9 +71,8 @@ const Register = () => {
     isValid: false,
   });
 
-  const regSuccess = false;
-  const dispatch = useDispatch();
-  const { isLoading, error, makeRequest: registerRequest } = useApi();
+  const authCtx = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
   const [emailError, setEmailError] = useState(null);
 
   const nameHandler = (event) => {
@@ -112,37 +110,22 @@ const Register = () => {
     });
 
     if (formState.isValid) {
+      setIsLoading(true);
       let regData = {
         name: formState.name.value,
         email: formState.email.value,
         password: formState.password.value,
         password_confirmation: formState.cpassword.value,
       };
-      registerRequest(
-        { url: "register", method: "post", params: regData },
-        (response) => {
-          if (
-            response.hasOwnProperty("user") &&
-            typeof response.user != "undefined"
-          ) {
-            dispatch(
-              authActions.setLoggedInData(response)
-            );
-          } else {
-            if (response.hasOwnProperty("email")) {
-              setEmailError(response.email);
-            } else {
-              console.warn(response);
-            }
-          }
-        }
-      );
+
+      addUser(regData);
+      setIsLoading(false);
+      authCtx.setLoggedInData({user: {...regData}});
     }
   };
 
   return (
   <CardLayout title="Create Account">
-    {!regSuccess && (
       <Form onSubmit={submitHandler}>
         <Form.Group className="mb-2 form-floating" controlId="name">
           <Form.Control
@@ -217,11 +200,11 @@ const Register = () => {
           />
           <Form.Label>Confirm Password</Form.Label>
           <Form.Text className="text-muted">
-            Minimum password length is 8 characters.
+            Minimum password length is {minPasswordLength} characters.
           </Form.Text>
         </Form.Group>
         <Form.Group className="mt-4">
-          {isLoading && !error && <Loader type="primary" />}
+          {isLoading && <Loader type="primary" />}
           {!isLoading && (
             <Button
               variant="primary"
@@ -234,13 +217,7 @@ const Register = () => {
           )}
         </Form.Group>
       </Form>
-    )}
     <AlertMsg {...alert} />
-    {regSuccess && (
-      <div className="alert alert-success" role="alert">
-        You have been registered successfully.
-      </div>
-    )}
     <hr />
     <Card.Text className="text-center">
       Have an account? &nbsp;

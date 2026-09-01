@@ -22,3 +22,7 @@ body {
 .toast {
   font-size: 1rem;
 }
+.dropdown-toggle::after {
+  /* opacity: 0; */
+}
+
