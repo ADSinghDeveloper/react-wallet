@@ -2,6 +2,7 @@
   "name": "wallet",
   "version": "0.1.0",
   "private": true,
+  "homepage": "https://adsinghdeveloper.github.io/react-wallet",
   "dependencies": {
     "@reduxjs/toolkit": "^2.12.0",
     "@testing-library/jest-dom": "^5.14.1",
@@ -21,6 +22,7 @@
     "start": "react-scripts start",
     "build": "react-scripts build",
     "test": "react-scripts test",
+    "deploy": "gh-pages -d build",
     "eject": "react-scripts eject"
   },
   "eslintConfig": {
@@ -40,5 +42,8 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+  },
+  "devDependencies": {
+    "gh-pages": "^6.3.0"
   }
 }
