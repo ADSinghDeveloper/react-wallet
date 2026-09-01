@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { Route, Switch, Redirect } from "react-router-dom";
+import { HashRouter, Route, Redirect } from "react-router-dom";
 
 import AuthContext from "./store/auth-context";
 import Login from "./components/views/Login";
@@ -17,7 +17,7 @@ function App() {
     <>
       {isLoggedIn && (
         <Layout>
-          <Switch>
+          <HashRouter>
             <Route path="/" exact>
               <Dashboard />
             </Route>
@@ -26,14 +26,14 @@ function App() {
             </Route>
             {/* <Route path="*"><PageNotFound /></Route> */}
             <Redirect to="/" />
-          </Switch>
+          </HashRouter>
         </Layout>
       )}
       {!isLoggedIn && (
         <div className="center-box">
           <Row>
             <Col lg={12}>
-              <Switch>
+              <HashRouter>
                 <Route path="/login">
                   <Login />
                 </Route>
@@ -41,7 +41,7 @@ function App() {
                   <Register />
                 </Route>
                 <Redirect to="login" />
-              </Switch>
+              </HashRouter>
             </Col>
           </Row>
         </div>
