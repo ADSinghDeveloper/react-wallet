@@ -9,14 +9,6 @@ import Loader from "../Loader";
 import { loginUser } from "../../store/local-users";
 import AlertMsg from "../AlertMsg";
 
-// const dummyUser = {
-//     "user": {
-//         "id": 1,
-//         "name": "Dummy User",
-//         "email": "username@email.com",
-//     }
-// }
-
 const formReducer = (state, action) => {
   switch (action.type) {
     case "EMAIL_VALIDATION":
@@ -53,11 +45,8 @@ export default function Login() {
     stay_logged_in: { value: false },
     isValid: false,
   });
-  const [alert, setAlert] = useState({error: null, alert_message: null});
+  const [alert, setAlert] = useState();
   const authCtx = useContext(AuthContext);
-  // const dispatch = useDispatch();
-  // const history = useHistory();
-  // const { isLoading, makeRequest: loginRequest } = useApi(); // {alert}
   const [isLoading, setIsLoading] = useState(false);
 
   const emailFieldHandler = (event) => {
@@ -88,8 +77,9 @@ export default function Login() {
       };
 
       setIsLoading(false);
-      if(loginUser(loginData)){
-        authCtx.setLoggedInData({...loginData});
+      const loggedInUser = loginUser(loginData);
+      if(loggedInUser?.email){
+        authCtx.setLoggedInData({user: {...loggedInUser}});
       }else{
         setAlert({error: "Incorrect Username or Password! Please try again."});
       }
@@ -143,9 +133,6 @@ export default function Login() {
           />
           <Form.Label>Password</Form.Label>
         </Form.Group>
-        {/* <Form.Group className="mb-2 form-floating" controlId="stayLogin">
-          <Form.Check type="checkbox" label="Stay LoggedIn" />
-        </Form.Group> */}
         <Form.Group className="mt-4">
           {isLoading && !alert.success && <Loader type="primary" />}
           {!isLoading && (

@@ -1,12 +1,11 @@
-import React, { useReducer } from "react";
+import { useContext, useReducer, useState } from "react";
 import { Form, Button } from "react-bootstrap";
 
-import { useSelector, useDispatch } from "react-redux";
-import { authActions } from "../../store/auth";
-import useApi from "../../hooks/use-api";
 import { validateEMail } from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
 import Loader from "../Loader";
+import AuthContext from "../../store/auth-context";
+import { loginUser, updateUser } from "../../store/local-users";
 
 const formReducer = (state, action) => {
   const PSW_LENGTH = 6;
@@ -82,9 +81,10 @@ const formReducer = (state, action) => {
   };
 };
 
-const Profile = (props) => {
-  const authUser = useSelector(state => state.auth.authUser);
-  const dispatch = useDispatch();
+const Profile = () => {
+  const {authUser, setLoggedInData} = useContext(AuthContext);
+  const [isLoading, setIsLoading] = useState(false);
+  const [alert, setAlert] = useState();
   const defaultForm = {
     id: { value: authUser.id },
     email: { value: authUser.email },
@@ -95,7 +95,6 @@ const Profile = (props) => {
     isValid: null,
   };
   const [formState, formDispatcher] = useReducer(formReducer, defaultForm);
-  const { isLoading, alert, makeRequest: profileUpdateRequest } = useApi();
 
   const nameHandler = (event) => {
     formDispatcher({ type: "NAME_VALIDATION", value: event.target.value });
@@ -115,6 +114,7 @@ const Profile = (props) => {
 
   const submitHandler = (event) => {
     event.preventDefault();
+    setAlert();
 
     formDispatcher({ type: "NAME_VALIDATION", value: formState.name.value });
     formDispatcher({ type: "PSW_VALIDATION", value: formState.current_password.value });
@@ -125,32 +125,23 @@ const Profile = (props) => {
     }
 
     if (formState.isValid) {
-      let profileData = {
-        id: formState.id.value,
-        name: formState.name.value,
-        email: formState.email.value,
-        curr_psw: formState.current_password.value,
-        new_psw: formState.new_password.value,
-        conf_psw: formState.confirm_password.value,
-      };
-      profileUpdateRequest({
-        method: 'post',
-        url: 'save_profile',
-        params: profileData
-      }, (response) => {
-        if ( !response.error && 
-          response.hasOwnProperty("user") &&
-          typeof response.user != "undefined"
-        ) {
-          dispatch(
-            authActions.updateAuthUser({ user: response.user })
-          );
-          formDispatcher({ type: "RESET" });
-          props.onClose();
-        } else {
-          console.warn(response);
+      setIsLoading(true);
+      const userFound = loginUser({email: formState.email.value, password: formState.current_password.value});
+
+      if(userFound){
+        let currentUser = {...userFound};
+        currentUser.name = formState.name.value;
+
+        if(formState.new_password.value){
+          currentUser.password = formState.new_password.value;
         }
-      });
+        updateUser(currentUser);
+        setLoggedInData({user: {...currentUser}});
+        setAlert({success: "Profile updated successfully."});
+      }else{
+        setAlert({error: "Invalid current password. Please try again."});
+      }
+      setIsLoading(false);
     }else{
       console.error('Invalid Form');
       console.log(formState);

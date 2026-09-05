@@ -15,7 +15,7 @@ function App() {
 
   return (
     <>
-      {isLoggedIn && (
+      {isLoggedIn ? (
         <Layout>
           <HashRouter>
             <Route path="/" exact>
@@ -28,8 +28,7 @@ function App() {
             <Redirect to="/" />
           </HashRouter>
         </Layout>
-      )}
-      {!isLoggedIn && (
+      ) : (
         <div className="center-box">
           <Row>
             <Col lg={12}>

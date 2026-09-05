@@ -22,7 +22,7 @@ const Header = () => {
       >
         <Container>
           <Navbar.Brand as="span">
-            <NavLink to="/" className="navbar-brand">
+            <NavLink to="/" className="navbar-brand fw-medium">
               Wallet
             </NavLink>
           </Navbar.Brand>

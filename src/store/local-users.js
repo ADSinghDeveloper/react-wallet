@@ -18,5 +18,18 @@ export function getUsers(){
 export function loginUser({email, password}){
   const usersData = getUsers();
   const userFound = usersData.filter(user => user.email === email && user.password === password);
-  return userFound.length > 0;
+  return userFound[0];
+}
+
+export function updateUser({name, email, password}){
+  if(!name || !email || !password){
+    return new Error("User data is missing.");
+  }
+
+  const usersData = getUsers();
+  // used mutable way to update the existing object intentionally and save it to the localstorage.
+  const userFound = usersData.find(user => user.email === email && user.password === password);
+  userFound.name = name;
+  userFound.password = password;
+  localStorage.setItem(userKey,JSON.stringify(usersData));
 }
