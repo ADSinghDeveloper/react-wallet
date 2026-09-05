@@ -32,12 +32,10 @@ const Header = () => {
             className="justify-content-end"
           >
             <Nav>
-                <NavbarLink href="#"
-                  onClick={() => setShowProfile(true)}
-                >
+                <NavbarLink onClick={() => setShowProfile(true)}>
                   <PersonCircle />
                 </NavbarLink>
-                <NavbarLink href="#" onClick={logout} className="nav-link">
+                <NavbarLink onClick={logout}>
                   <BoxArrowRight />
                 </NavbarLink>
                 {/* <NavLink to="/" exact className="nav-link">Dashboard</NavLink> */}

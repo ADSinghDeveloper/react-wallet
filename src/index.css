@@ -22,7 +22,8 @@ body {
 .toast {
   font-size: 1rem;
 }
-.dropdown-toggle::after {
-  /* opacity: 0; */
+.form-control:disabled, .form-control[readonly] {
+    background-color: #e9ecef;
+    cursor: not-allowed;
 }
 
