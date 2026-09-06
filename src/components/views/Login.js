@@ -1,4 +1,4 @@
-import { useContext, useReducer, useState } from "react";
+import { useContext, useReducer } from "react";
 import { Form, Button, Card } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
@@ -6,8 +6,9 @@ import AuthContext from "../../store/auth-context";
 import { minPasswordLength, validateEMail} from "../../helper/helper";
 import CardLayout from "../layout/CardLayout";
 import Loader from "../Loader";
-import { loginUser } from "../../store/local-users";
+// import { loginUser } from "../../store/local-users";
 import AlertMsg from "../AlertMsg";
+import useApi from "../../hooks/use-api";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -45,9 +46,10 @@ export default function Login() {
     stay_logged_in: { value: false },
     isValid: false,
   });
-  const [alert, setAlert] = useState();
+  // const [alert, setAlert] = useState();
   const authCtx = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
+  // const [isLoading, setIsLoading] = useState(false);
+  const { isLoading, alert, makeRequest: loginRequest } = useApi();
 
   const emailFieldHandler = (event) => {
     formDispatcher({
@@ -70,19 +72,30 @@ export default function Login() {
     formDispatcher({ type: "PSW_VALIDATION", value: formState.password.value });
 
     if (formState.isValid) {
-      setIsLoading(true);
+      // setIsLoading(true);
       let loginData = {
         email: formState.email.value,
         password: formState.password.value,
       };
 
-      setIsLoading(false);
-      const loggedInUser = loginUser(loginData);
-      if(loggedInUser?.email){
-        authCtx.setLoggedInData({user: {...loggedInUser}});
-      }else{
-        setAlert({error: "Incorrect Username or Password! Please try again."});
-      }
+      loginRequest({ url: "login", method: 'post', params: loginData },(response) => {
+        if (
+          response.hasOwnProperty("user") &&
+          response.hasOwnProperty("access_token")
+        ) {
+          authCtx.setLoggedInData(response);
+        }else{
+          console.error('Server Response Error: ', response);
+        }
+      });
+
+      // setIsLoading(false);
+      // const loggedInUser = loginUser(loginData);
+      // if(loggedInUser?.email){
+      //   authCtx.setLoggedInData({user: {...loggedInUser}});
+      // }else{
+      //   setAlert({error: "Incorrect Username or Password! Please try again."});
+      // }
     }
   };
 
@@ -134,7 +147,7 @@ export default function Login() {
           <Form.Label>Password</Form.Label>
         </Form.Group>
         <Form.Group className="mt-4">
-          {isLoading && !alert.success && <Loader type="primary" />}
+          {isLoading && <Loader type="primary" />}
           {!isLoading && (
             <Button variant="primary" type="submit" className="w-100">Log In</Button>
           )}

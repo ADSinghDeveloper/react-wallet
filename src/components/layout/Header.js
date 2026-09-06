@@ -6,10 +6,18 @@ import { NavLink } from "react-router-dom";
 import AuthContext from "../../store/auth-context";
 import Modal from "../Modal";
 import Profile from "../views/Profile";
+import useApi from "../../hooks/use-api";
 
 const Header = () => {
-  const { logout } = useContext(AuthContext);
+  const { logout, authUser } = useContext(AuthContext);
   const [showProfile, setShowProfile] = useState(false);
+  const {makeRequest: logoutRequest} = useApi();
+
+  const logoutHandler = () => {
+    logoutRequest({url: "logout", method: "post"}, () => {
+        logout();
+      });
+  };
 
   return (
     <>
@@ -32,10 +40,10 @@ const Header = () => {
             className="justify-content-end"
           >
             <Nav>
-                <NavbarLink onClick={() => setShowProfile(true)}>
+                <NavbarLink onClick={() => setShowProfile(true)} title={`${authUser.name || "User"}'s Profile`}>
                   <PersonCircle />
                 </NavbarLink>
-                <NavbarLink onClick={logout}>
+                <NavbarLink onClick={logoutHandler}>
                   <BoxArrowRight />
                 </NavbarLink>
                 {/* <NavLink to="/" exact className="nav-link">Dashboard</NavLink> */}
