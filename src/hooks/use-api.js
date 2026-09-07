@@ -1,17 +1,15 @@
 import { useCallback, useContext, useState } from "react";
 import AuthContext from "../store/auth-context";
 
-const resetAlert = {error: null, success: null};
-
 export default function useApi() {
   const [isLoading, setLoading] = useState(false);
-  const [alert, setAlert] = useState({...resetAlert});
+  const [alert, setAlert] = useState(null);
   const { accessToken: accessTokenData } = useContext(AuthContext);
   const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
   const makeRequest = useCallback(async (request, callBack) => {
     setLoading(true);
-    setAlert({...resetAlert});
+    setAlert(null);
 
     let options = {
       headers: {
@@ -29,29 +27,32 @@ export default function useApi() {
 
     try{
       const response = await fetch(`${apiHost}${request.url}`, options);
+      let errorMsg = null;
 
       if(response.status === 401){
-        setAlert({error: "Username or Password is wrong. Please check and try again."});
+        errorMsg = "Incorrect Username or Password. Please try again.";
       } else if (!response.ok) {
-        setAlert({error: `${response.status}: ${response.statusText}`});
+        errorMsg = `${response.status}: ${response.statusText}`;
       }
 
       const responseData = await response.json();
-      callBack(responseData);
+
+      if(responseData.error){
+        errorMsg = responseData.error;
+      }
+
+      if(errorMsg){
+        throw new Error(errorMsg);
+      }else{
+        callBack(responseData);
+      }
       setLoading(false);
 
     } catch(error) {
-        console.log("catch", error);
         setLoading(false);
-        let errorMsg = '';
-        if(error.hasOwnProperty("response") && error.response !== undefined){
-          errorMsg = (error.response.status === 401) ? "Username/Password mismatched." : `${error.response.statusText}: ${error.response.data.message}`;
-        }else{
-          errorMsg = 'Username or Password is wrong. Please check and try again.';
-        }
-        setAlert({error: errorMsg});
+        setAlert({error: error.message});
       }
   }, [apiHost, accessTokenData]);
 
-  return { isLoading, alert, makeRequest };
+  return { isLoading, makeRequest, alert, setAlert };
 };

@@ -9,6 +9,7 @@ const initialState = {
 const AuthContext = createContext({
   ...initialState,
   setLoggedInData: (loginData) => {},
+  profileUpdate: (profileData) => {},
   logout: () => {},
 });
 
@@ -46,6 +47,12 @@ export function AuthContextProvider ({children}) {
       dispatchAuthStateAction({
         type: "LOGIN",
         payload: loginData,
+      });
+    },
+    profileUpdate: (profileData) => {
+      dispatchAuthStateAction({
+        type: "UPDATE",
+        payload: profileData,
       });
     },
     logout: () => {

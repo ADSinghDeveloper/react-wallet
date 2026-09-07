@@ -7,7 +7,7 @@ const MsgModal = (props) => {
       <Modal.Header closeButton className={`shadow mb-3 text-primary ${props.class}`}>
         <Modal.Title>{props.title}</Modal.Title>
       </Modal.Header>
-      <Modal.Body className="mb-4">
+      <Modal.Body className="mb-3">
         {props.children}
       </Modal.Body>
       {/* <Modal.Footer></Modal.Footer> */}

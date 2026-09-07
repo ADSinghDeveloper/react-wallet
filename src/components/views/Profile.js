@@ -1,11 +1,11 @@
-import { useContext, useReducer, useState } from "react";
+import { useContext, useReducer } from "react";
 import { Form, Button } from "react-bootstrap";
 
 import { validateEMail } from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
 import Loader from "../Loader";
 import AuthContext from "../../store/auth-context";
-import { loginUser, updateUser } from "../../store/local-users";
+import useApi from "../../hooks/use-api";
 
 const formReducer = (state, action) => {
   const PSW_LENGTH = 6;
@@ -81,10 +81,9 @@ const formReducer = (state, action) => {
   };
 };
 
-const Profile = () => {
-  const {authUser, setLoggedInData} = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
-  const [alert, setAlert] = useState();
+const Profile = (props) => {
+  const {authUser, profileUpdate} = useContext(AuthContext);
+  const {isLoading, alert, makeRequest: profileUpdateRequest, setAlert} = useApi();
   const defaultForm = {
     id: { value: authUser.id },
     email: { value: authUser.email },
@@ -114,7 +113,6 @@ const Profile = () => {
 
   const submitHandler = (event) => {
     event.preventDefault();
-    setAlert();
 
     formDispatcher({ type: "NAME_VALIDATION", value: formState.name.value });
     formDispatcher({ type: "PSW_VALIDATION", value: formState.current_password.value });
@@ -125,23 +123,32 @@ const Profile = () => {
     }
 
     if (formState.isValid) {
-      setIsLoading(true);
-      const userFound = loginUser({email: formState.email.value, password: formState.current_password.value});
+      let profileData = {
+        id: formState.id.value,
+        name: formState.name.value,
+        email: formState.email.value,
+        curr_psw: formState.current_password.value,
+        new_psw: formState.new_password.value,
+        conf_psw: formState.confirm_password.value,
+      };
 
-      if(userFound){
-        let currentUser = {...userFound};
-        currentUser.name = formState.name.value;
+      // Make BE API request to update profile data.
+      profileUpdateRequest({
+        method: 'post',
+        url: 'save_profile',
+        params: profileData
 
-        if(formState.new_password.value){
-          currentUser.password = formState.new_password.value;
+      }, (response) => {
+        if (!response.error && response.hasOwnProperty("user")) {
+          profileUpdate({ user: response.user });
+          formDispatcher({ type: "RESET" });
+          setAlert({success: "Profile updated successfully."});
+          // props.onClose();
+        } else {
+          console.warn(response);
         }
-        updateUser(currentUser);
-        setLoggedInData({user: {...currentUser}});
-        setAlert({success: "Profile updated successfully."});
-      }else{
-        setAlert({error: "Invalid current password. Please try again."});
-      }
-      setIsLoading(false);
+      });
+
     }else{
       console.error('Invalid Form');
       console.log(formState);
@@ -226,7 +233,7 @@ const Profile = () => {
         />
         <Form.Label>Confirm Password</Form.Label>
       </Form.Group>
-      <Form.Group className="mt-4 text-center">
+      <Form.Group className="mt-3 text-center">
         {isLoading && !alert.success && <Loader type="primary" />}
         {!isLoading && (
           <Button variant="primary" type="submit" disabled={formState.isValid !== true}>
