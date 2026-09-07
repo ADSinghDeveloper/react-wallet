@@ -1,15 +1,17 @@
 import { useCallback, useContext, useState } from "react";
 import AuthContext from "../store/auth-context";
 
+const resetAlert = {error: null, success: null};
+
 export default function useApi() {
   const [isLoading, setLoading] = useState(false);
-  const [alert, setAlert] = useState(null);
+  const [alert, setAlert] = useState({...resetAlert});
   const { accessToken: accessTokenData } = useContext(AuthContext);
   const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
   const makeRequest = useCallback(async (request, callBack) => {
     setLoading(true);
-    setAlert(null);
+    setAlert({...resetAlert});
 
     let options = {
       headers: {
