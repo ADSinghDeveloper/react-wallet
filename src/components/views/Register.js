@@ -1,13 +1,13 @@
 import { useContext, useReducer, useState } from "react";
-import { Card, Form, Button } from "react-bootstrap";
+import { Card } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import { minPasswordLength, validateEMail } from "../../utilities/helper";
-import AlertMsg from "../AlertMsg";
 import CardLayout from "../layout/CardLayout";
-import Loader from "../Loader";
 import AuthContext from "../../store/auth-context";
 import useApi from "../../hooks/use-api";
+import Reform from "../form/Reform";
+import Input from "../form/Input";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -132,98 +132,68 @@ const Register = () => {
 
   return (
   <CardLayout title="Create Account">
-      <Form onSubmit={submitHandler}>
-        <Form.Group className="mb-2 form-floating" controlId="name">
-          <Form.Control
-            placeholder="Enter Your Name"
-            value={formState.name.value}
-            onChange={nameHandler}
-            onBlur={nameHandler}
-            className={
-              formState.name.isValid != null
-                ? formState.name.isValid
-                  ? "is-valid"
-                  : "is-invalid"
-                : ""
-            }
-          />
-          <Form.Label>Name</Form.Label>
-        </Form.Group>
-        <Form.Group className="mb-2 form-floating" controlId="email">
-          <Form.Control
-            type="email"
-            placeholder="Enter Email"
-            value={formState.email.value}
-            className={
-              formState.email.isValid != null || emailError
-                ? formState.email.isValid && !emailError
-                  ? "is-valid"
-                  : "is-invalid"
-                : ""
-            }
-            onChange={emailHandler}
-            onBlur={emailHandler}
-          />
-          <Form.Label>Email address</Form.Label>
-          {emailError && (
-            <Form.Text className="text-danger">{emailError}</Form.Text>
-          )}
-        </Form.Group>
-        <Form.Group className="mb-2 form-floating" controlId="password">
-          <Form.Control
-            type="password"
-            placeholder="Password"
-            value={formState.password.value}
-            className={
-              formState.password.isValid != null
-                ? formState.password.isValid
-                  ? "is-valid"
-                  : "is-invalid"
-                : ""
-            }
-            onChange={passwordHandler}
-            onBlur={passwordHandler}
-          />
-          <Form.Label>Password</Form.Label>
-        </Form.Group>
-        <Form.Group
-          className="mb-2 form-floating"
-          controlId="confirm_password"
-        >
-          <Form.Control
-            type="password"
-            placeholder="Confirm Password"
-            value={formState.cpassword.value}
-            className={
-              formState.cpassword.isValid != null
-                ? formState.cpassword.isValid
-                  ? "is-valid"
-                  : "is-invalid"
-                : ""
-            }
-            onChange={cpasswordHandler}
-            onBlur={cpasswordHandler}
-          />
-          <Form.Label>Confirm Password</Form.Label>
-          <Form.Text className="text-muted">
-            Minimum password length is {minPasswordLength} characters.
-          </Form.Text>
-        </Form.Group>
-        <Form.Group className="mt-4">
-          {isLoading && <Loader type="primary" />}
-          {!isLoading && (
-            <Button
-              variant="primary"
-              type="submit"
-              className="w-100"
-              disabled={!formState.isValid}
-            >
-              Create Account
-            </Button>
-          )}
-        </Form.Group>
-      </Form>
-    <AlertMsg {...alert} />
+      <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} isDisabled={!formState.isValid} submitButtonText="Create Account">
+        <Input 
+          id="name"
+          label="Name" 
+          placeholder="Enter Your Name"
+          value={formState.name.value}
+          onChange={nameHandler}
+          onBlur={nameHandler}
+          className={
+            formState.name.isValid != null
+              ? formState.name.isValid
+                ? "is-valid"
+                : "is-invalid"
+              : ""
+          }/>
+        <Input id="email" label="Email"
+          type="email"
+          placeholder="Enter Email"
+          value={formState.email.value}
+          className={
+            formState.email.isValid != null || emailError
+              ? formState.email.isValid && !emailError
+                ? "is-valid"
+                : "is-invalid"
+              : ""
+          }
+          onChange={emailHandler}
+          onBlur={emailHandler}
+          error={emailError}
+        />
+        <Input id="password" label="Password" 
+          type="password"
+          placeholder="Password"
+          value={formState.password.value}
+          className={
+            formState.password.isValid != null
+              ? formState.password.isValid
+                ? "is-valid"
+                : "is-invalid"
+              : ""
+          }
+          onChange={passwordHandler}
+          onBlur={passwordHandler}
+        />
+        <Input 
+          id="confirm_password"
+          label="Confirm Password"
+          type="password"
+          placeholder="Confirm Password"
+          value={formState.cpassword.value}
+          className={
+            formState.cpassword.isValid != null
+              ? formState.cpassword.isValid
+                ? "is-valid"
+                : "is-invalid"
+              : ""
+          }
+          onChange={cpasswordHandler}
+          onBlur={cpasswordHandler}
+          hint={`Minimum password length is ${minPasswordLength} characters.`}
+        />
+      </Reform>
     <hr />
     <Card.Text className="text-center">
       Have an account? &nbsp;

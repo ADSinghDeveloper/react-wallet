@@ -1,11 +1,10 @@
 import { useContext, useReducer } from "react";
-import { Form, Button } from "react-bootstrap";
 
 import { minPasswordLength, validateEMail } from "../../utilities/helper";
-import AlertMsg from "../AlertMsg";
-import Loader from "../Loader";
 import AuthContext from "../../store/auth-context";
 import useApi from "../../hooks/use-api";
+import Reform from "../form/Reform";
+import Input from "../form/Input";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -154,95 +153,74 @@ const Profile = (props) => {
     }
   }
 
-  return (<>
-    <Form onSubmit={submitHandler}>
-      <Form.Group className="mb-2 form-floating" controlId="name">
-        <Form.Control
-          type="text"
-          placeholder="Name"
-          value={formState.name.value}
-          onChange={nameHandler}
-          onBlur={nameHandler}
-          tabIndex={0}
-          className={
-            formState.name.isValid != null
-              ? formState.name.isValid
-                ? "is-valid"
-                : "is-invalid"
-              : ""
-          }
-        />
-        <Form.Label>Name</Form.Label>
-      </Form.Group>
-      <Form.Group className="mb-2 form-floating" controlId="email">
-        <Form.Control type="email" placeholder="Email" value={formState.email.value} readOnly />
-        <Form.Label>Email</Form.Label>
-      </Form.Group>
-      <Form.Group className="mb-2 form-floating" controlId="current_password">
-        <Form.Control
-          type="password"
-          placeholder="Password"
-          value={formState.current_password.value}
-          onChange={pswHandler}
-          onBlur={pswHandler}
-          className={
-            formState.current_password.isValid != null
-              ? formState.current_password.isValid
-                ? "is-valid"
-                : "is-invalid"
-              : ""
-          }
-        />
-        <Form.Label>Current Password</Form.Label>
-      </Form.Group>
-      <Form.Group className="mb-2 form-floating" controlId="new_password">
-        <Form.Control
-          type="password"
-          placeholder="New Password"
-          value={formState.new_password.value}
-          onChange={npswHandler}
-          onBlur={npswHandler}
-          className={
-            formState.new_password.isValid != null
-              ? formState.new_password.isValid
-                ? "is-valid"
-                : "is-invalid"
-              : ""
-          }
-        />
-        <Form.Label>New Password</Form.Label>
-      </Form.Group>
-      <Form.Group
-        className="mb-2 form-floating"
-        controlId="confirm_password"
-      >
-        <Form.Control
-          type="password"
-          placeholder="Confirm Password"
-          value={formState.confirm_password.value}
-          onChange={cpswHandler}
-          onBlur={cpswHandler}
-          className={
-            formState.confirm_password.isValid != null
-              ? formState.confirm_password.isValid
-                ? "is-valid"
-                : "is-invalid"
-              : ""
-          }
-        />
-        <Form.Label>Confirm Password</Form.Label>
-      </Form.Group>
-      <Form.Group className="mt-3 text-center">
-        {isLoading && !alert.success && <Loader type="primary" />}
-        {!isLoading && (
-          <Button variant="primary" type="submit" disabled={formState.isValid !== true}>
-            Save
-          </Button>
-        )}
-      </Form.Group>
-    </Form>
-    <AlertMsg {...alert} />
-  </>);
+  return (
+    <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} submitButtonText="Update Profile" isDisabled={formState.isValid !== true}>
+      <Input
+        id="name"
+        label="Name"
+        placeholder="Name"
+        value={formState.name.value}
+        onChange={nameHandler}
+        onBlur={nameHandler}
+        tabIndex={0}
+        className={
+          formState.name.isValid != null
+            ? formState.name.isValid
+              ? "is-valid"
+              : "is-invalid"
+            : ""
+        }
+      />
+      <Input id="email" label="Email" type="email" placeholder="Email" value={formState.email.value} readOnly />
+      <Input 
+        id="current_password"
+        label="Current Password"
+        type="password"
+        placeholder="Password"
+        value={formState.current_password.value}
+        onChange={pswHandler}
+        onBlur={pswHandler}
+        className={
+          formState.current_password.isValid != null
+            ? formState.current_password.isValid
+              ? "is-valid"
+              : "is-invalid"
+            : ""
+        }
+      />
+      <Input
+        id="new_password"
+        label="New Password"
+        type="password"
+        placeholder="New Password"
+        value={formState.new_password.value}
+        onChange={npswHandler}
+        onBlur={npswHandler}
+        className={
+          formState.new_password.isValid != null
+            ? formState.new_password.isValid
+              ? "is-valid"
+              : "is-invalid"
+            : ""
+        }
+      />
+      <Input
+        id="confirm_password"
+        label="Confirm Password"
+        type="password"
+        placeholder="Confirm Password"
+        value={formState.confirm_password.value}
+        onChange={cpswHandler}
+        onBlur={cpswHandler}
+        className={
+          formState.confirm_password.isValid != null
+            ? formState.confirm_password.isValid
+              ? "is-valid"
+              : "is-invalid"
+            : ""
+        }
+      />
+    </Reform>);
 };
 
 export default Profile;
