@@ -1,7 +1,7 @@
 import { useContext, useReducer } from "react";
 import { Form, Button } from "react-bootstrap";
 
-import { minPasswordLength, validateEMail } from "../../helper/helper";
+import { minPasswordLength, validateEMail } from "../../utilities/helper";
 import AlertMsg from "../AlertMsg";
 import Loader from "../Loader";
 import AuthContext from "../../store/auth-context";

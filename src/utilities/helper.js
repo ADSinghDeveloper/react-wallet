@@ -12,7 +12,7 @@ export function base64Encode(str) {
   return btoa(binString);
 }
 
-export const rwamKey = "rwam";
+const rwamKey = "rwam";
 
 window.addEventListener("beforeunload", (e) => {
   if (window.hasOwnProperty(rwamKey)) {

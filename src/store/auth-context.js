@@ -1,5 +1,5 @@
 import { createContext, useMemo, useReducer } from "react";
-import { setBrowserAuthKey } from "../helper/helper";
+import { setBrowserAuthKey } from "../utilities/helper";
 
 const initialState = {
   isLoggedIn: null,

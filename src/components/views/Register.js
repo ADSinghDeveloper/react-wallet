@@ -2,7 +2,7 @@ import { useContext, useReducer, useState } from "react";
 import { Card, Form, Button } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
-import { minPasswordLength, validateEMail } from "../../helper/helper";
+import { minPasswordLength, validateEMail } from "../../utilities/helper";
 import AlertMsg from "../AlertMsg";
 import CardLayout from "../layout/CardLayout";
 import Loader from "../Loader";

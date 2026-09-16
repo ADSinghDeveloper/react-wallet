@@ -9,7 +9,7 @@ import Profile from "./components/views/Profile";
 import Layout from "./components/layout/Layout";
 import Notification from "./components/Notification";
 import { Col, Row } from "react-bootstrap";
-import { getLocalAuthKey } from "./helper/helper";
+import { getLocalAuthKey } from "./utilities/helper";
 import useApi from "./hooks/use-api";
 import Loader from "./components/Loader";
 

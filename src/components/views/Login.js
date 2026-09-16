@@ -3,7 +3,7 @@ import { Form, Button, Card } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
 
 import AuthContext from "../../store/auth-context";
-import { minPasswordLength, validateEMail} from "../../helper/helper";
+import { minPasswordLength, validateEMail} from "../../utilities/helper";
 import CardLayout from "../layout/CardLayout";
 import Loader from "../Loader";
 import AlertMsg from "../AlertMsg";
