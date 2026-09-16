@@ -1,14 +1,13 @@
 import { useContext, useReducer } from "react";
 import { Form, Button } from "react-bootstrap";
 
-import { validateEMail } from "../../helper/helper";
+import { minPasswordLength, validateEMail } from "../../helper/helper";
 import AlertMsg from "../AlertMsg";
 import Loader from "../Loader";
 import AuthContext from "../../store/auth-context";
 import useApi from "../../hooks/use-api";
 
 const formReducer = (state, action) => {
-  const PSW_LENGTH = 6;
   switch (action.type) {
     case "NAME_VALIDATION":
       state = {
@@ -34,7 +33,7 @@ const formReducer = (state, action) => {
           ...state,
           current_password: {
             value: action.value.trim(),
-            isValid: action.value.trim().length === 0 && (state.name.isValid === null || state.new_password.isValid === null)? null : action.value.trim().length >= PSW_LENGTH,
+            isValid: action.value.trim().length === 0 && (state.name.isValid === null || state.new_password.isValid === null)? null : action.value.trim().length >= minPasswordLength,
           },
         };
         break;
@@ -43,7 +42,7 @@ const formReducer = (state, action) => {
         ...state,
         new_password: {
           value: action.value.trim(),
-          isValid: action.value.trim().length === 0? null : action.value.trim().length > PSW_LENGTH,
+          isValid: action.value.trim().length === 0? null : action.value.trim().length > minPasswordLength,
         },
         confirm_password: {
           value: state.confirm_password.value,
@@ -164,7 +163,7 @@ const Profile = (props) => {
           value={formState.name.value}
           onChange={nameHandler}
           onBlur={nameHandler}
-          tabIndex={1}
+          tabIndex={0}
           className={
             formState.name.isValid != null
               ? formState.name.isValid

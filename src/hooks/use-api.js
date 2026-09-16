@@ -1,4 +1,4 @@
-import { useCallback, useContext, useState } from "react";
+import { useCallback, use, useState } from "react";
 import AuthContext from "../store/auth-context";
 
 const resetAlert = {error: null, success: null};
@@ -6,7 +6,7 @@ const resetAlert = {error: null, success: null};
 export default function useApi() {
   const [isLoading, setLoading] = useState(false);
   const [alert, setAlert] = useState({...resetAlert});
-  const { accessToken: accessTokenData } = useContext(AuthContext);
+  const { accessToken: accessTokenData } = use(AuthContext);
   const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
   const makeRequest = useCallback(async (request, callBack) => {
@@ -17,7 +17,8 @@ export default function useApi() {
       headers: {
           "Accept": "application/json",
           "Content-Type": "application/json;charset=UTF-8",
-          "Authorization": accessTokenData.token && `${accessTokenData.type} ${accessTokenData.token}`
+          "Authorization": request.access_token? `${request.token_type} ${request.access_token}` : `${accessTokenData.token_type} ${accessTokenData.access_token}`,
+          // "Authorization": accessTokenData.token && `${accessTokenData.type} ${accessTokenData.token}`
         }
     };
 
@@ -31,23 +32,27 @@ export default function useApi() {
       const response = await fetch(`${apiHost}${request.url}`, options);
       let errorMsg = null;
 
-      if(response.status === 401){
-        errorMsg = "Incorrect Username or Password. Please try again.";
-      } else if (!response.ok) {
-        errorMsg = `${response.status}: ${response.statusText}`;
-      }
+      if(response.ok){
+        const responseData = await response.json();
 
-      const responseData = await response.json();
-
-      if(responseData.error){
-        errorMsg = responseData.error;
+        // Check for server error.
+        if(responseData.error){
+          errorMsg = responseData.error;
+        }else{
+          callBack(responseData);
+        }
+      }else{
+        if(response.status === 401){
+          errorMsg = "Incorrect Username or Password. Please try again.";
+        } else {
+          errorMsg = `${response.status}: ${response.statusText}`;
+        }
       }
 
       if(errorMsg){
         throw new Error(errorMsg);
-      }else{
-        callBack(responseData);
       }
+
       setLoading(false);
 
     } catch(error) {

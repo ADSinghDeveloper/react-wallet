@@ -6,7 +6,6 @@ import AuthContext from "../../store/auth-context";
 import { minPasswordLength, validateEMail} from "../../helper/helper";
 import CardLayout from "../layout/CardLayout";
 import Loader from "../Loader";
-// import { loginUser } from "../../store/local-users";
 import AlertMsg from "../AlertMsg";
 import useApi from "../../hooks/use-api";
 
@@ -46,11 +45,8 @@ export default function Login() {
     stay_logged_in: { value: false },
     isValid: false,
   });
-  // const [alert, setAlert] = useState();
   const authCtx = useContext(AuthContext);
-  // const [isLoading, setIsLoading] = useState(false);
   const { isLoading, alert, makeRequest: loginRequest } = useApi();
-
   const emailFieldHandler = (event) => {
     formDispatcher({
       type: "EMAIL_VALIDATION",
@@ -65,14 +61,10 @@ export default function Login() {
   const submitHandler = (event) => {
     event.preventDefault();
 
-    formDispatcher({
-      type: "EMAIL_VALIDATION",
-      value: formState.email.value,
-    });
+    formDispatcher({ type: "EMAIL_VALIDATION", value: formState.email.value});
     formDispatcher({ type: "PSW_VALIDATION", value: formState.password.value });
 
     if (formState.isValid) {
-      // setIsLoading(true);
       let loginData = {
         email: formState.email.value,
         password: formState.password.value,
@@ -85,17 +77,9 @@ export default function Login() {
         ) {
           authCtx.setLoggedInData(response);
         }else{
-          console.error('Server Response Error: ', response);
+          console.error('Server Response Data Error: ', response);
         }
       });
-
-      // setIsLoading(false);
-      // const loggedInUser = loginUser(loginData);
-      // if(loggedInUser?.email){
-      //   authCtx.setLoggedInData({user: {...loggedInUser}});
-      // }else{
-      //   setAlert({error: "Incorrect Username or Password! Please try again."});
-      // }
     }
   };
 
@@ -136,6 +120,7 @@ export default function Login() {
             value={formState.password.value}
             onChange={passwordFieldHandler}
             onBlur={passwordFieldHandler}
+            minLength={minPasswordLength}
             className={
               formState.password.isValid != null
                 ? formState.password.isValid

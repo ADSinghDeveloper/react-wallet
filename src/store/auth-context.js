@@ -1,4 +1,5 @@
-import { createContext, useReducer } from "react";
+import { createContext, useMemo, useReducer } from "react";
+import { setBrowserAuthKey } from "../helper/helper";
 
 const initialState = {
   isLoggedIn: null,
@@ -20,10 +21,11 @@ function authReducer(state,action){
       isLoggedIn: true,
       authUser: {...action.payload.user},
       accessToken: {
-        token: action.payload.access_token,
-        type: action.payload.token_type,
+        access_token: action.payload.access_token,
+        token_type: action.payload.token_type,
       }
     }
+    setBrowserAuthKey(state.accessToken);
   }
   if(action.type === "LOGOUT"){
     state = { ...initialState, isLoggedIn: false };
@@ -40,7 +42,8 @@ function authReducer(state,action){
 export function AuthContextProvider ({children}) {
   const [authState, dispatchAuthStateAction] = useReducer(authReducer,{...initialState});
   
-  const authContextState = {
+  const authContextState = useMemo(() => {
+    return {
     ...authState, // getting updated state from reducer.
 
     setLoggedInData: (loginData) => {
@@ -60,7 +63,7 @@ export function AuthContextProvider ({children}) {
         type: "LOGOUT",
       });
     },
-  }
+  }},[authState]);
 
   return (
     <AuthContext.Provider value={authContextState}>

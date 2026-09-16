@@ -1,4 +1,4 @@
-export const userKey = "users";
+export const userKey = "users:v1";
 
 export function addUser({name, email, password}){
   if(!name || !email || !password){

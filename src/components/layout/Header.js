@@ -1,4 +1,4 @@
-import { useContext, useState } from "react";
+import { use, useState } from "react";
 import { Container, Navbar, Nav, NavLink as NavbarLink } from "react-bootstrap";
 import { BoxArrowRight, PersonCircle } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
@@ -9,7 +9,7 @@ import Profile from "../views/Profile";
 import useApi from "../../hooks/use-api";
 
 const Header = () => {
-  const { logout, authUser } = useContext(AuthContext);
+  const { logout, authUser } = use(AuthContext);
   const [showProfile, setShowProfile] = useState(false);
   const {makeRequest: logoutRequest} = useApi();
 

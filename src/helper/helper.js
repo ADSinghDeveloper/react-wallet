@@ -29,6 +29,7 @@ export function removeLocalAuthKey() {
 }
 
 export function setBrowserAuthKey(token) {
+  removeLocalAuthKey();
   window[rwamKey] = token;
 }
 

@@ -7,7 +7,7 @@ import AlertMsg from "../AlertMsg";
 import CardLayout from "../layout/CardLayout";
 import Loader from "../Loader";
 import AuthContext from "../../store/auth-context";
-import { addUser } from "../../store/local-users";
+import useApi from "../../hooks/use-api";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -72,8 +72,8 @@ const Register = () => {
   });
 
   const authCtx = useContext(AuthContext);
-  const [isLoading, setIsLoading] = useState(false);
   const [emailError, setEmailError] = useState(null);
+  const { isLoading, alert, makeRequest: registerRequest } = useApi();
 
   const nameHandler = (event) => {
     formDispatcher({ type: "NAME_VALIDATION", value: event.target.value });
@@ -110,7 +110,6 @@ const Register = () => {
     });
 
     if (formState.isValid) {
-      setIsLoading(true);
       let regData = {
         name: formState.name.value,
         email: formState.email.value,
@@ -118,9 +117,16 @@ const Register = () => {
         password_confirmation: formState.cpassword.value,
       };
 
-      addUser(regData);
-      setIsLoading(false);
-      authCtx.setLoggedInData({user: {...regData}});
+      registerRequest({ url: "register", method: "post", params: regData }, (response) => {
+          if ( response.hasOwnProperty("user") && typeof response.user != "undefined" ) {
+            authCtx.setLoggedInData(response);
+          } else if (response.hasOwnProperty("email")) {
+            setEmailError(response.email);
+          } else {
+            console.error(response);
+          }
+        }
+      );
     }
   };
 
@@ -210,7 +216,7 @@ const Register = () => {
               variant="primary"
               type="submit"
               className="w-100"
-              // disabled={!formState.isValid}
+              disabled={!formState.isValid}
             >
               Create Account
             </Button>
