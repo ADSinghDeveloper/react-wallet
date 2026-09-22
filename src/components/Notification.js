@@ -13,7 +13,7 @@ const Notification = () => {
 
     return (
         <ToastContainer className="p-3 fixed-bottom mx-auto text-white text-center">
-          <Toast show={props.show} bg={props.type !== 'error' ? 'success' : 'danger'} onClose={() => { dispatch(notificationActions.close())}} delay={5000} autohide>
+          <Toast show={props.show} bg={props.type !== 'error' ? 'success' : 'danger'} onClose={() => { dispatch(notificationActions.close())}} delay={9000} autohide>
           {props.title && <Toast.Header>
               <strong className="me-auto">{props.title}</strong>
               {/* {props.titleSmall && <small className="text-muted">just now</small>} */}

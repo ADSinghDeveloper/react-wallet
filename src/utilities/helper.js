@@ -5,7 +5,7 @@ export const validateEMail = (em) => {
     const emailValidRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
     return emailValidRegex.test(em)
 }
-
+// base64 encoder function to encode string into base64.
 export function base64Encode(str) {
   const bytes = new TextEncoder().encode(str);
   const binString = String.fromCodePoint(...bytes);

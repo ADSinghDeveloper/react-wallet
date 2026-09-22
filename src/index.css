@@ -27,3 +27,7 @@ body {
     cursor: not-allowed;
 }
 
+.toast-container {
+  --bs-toast-zindex: 1100;
+  z-index: var(--bs-toast-zindex);
+}

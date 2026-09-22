@@ -1,9 +1,9 @@
 import { createContext, useMemo, useReducer } from "react";
-import { setBrowserAuthKey } from "../utilities/helper";
+import { delBrowserAuthKey, setBrowserAuthKey } from "../utilities/helper";
 
 const initialState = {
   isLoggedIn: null,
-  accessToken: { token: "", type: "" },
+  accessToken: { access_token: "", token_type: "" },
   authUser: { name: "" },
 };
 
@@ -29,6 +29,7 @@ function authReducer(state,action){
   }
   if(action.type === "LOGOUT"){
     state = { ...initialState, isLoggedIn: false };
+    delBrowserAuthKey();
   }
   if(action.type === "UPDATE"){
       state = {
