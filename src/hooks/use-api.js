@@ -1,12 +1,14 @@
-import { useCallback, use, useState } from "react";
-import AuthContext from "../store/auth-context";
+import { useCallback, useState } from "react";
+// import AuthContext from "../store/auth-context";
+import { useSelector } from "react-redux";
 
 const resetAlert = {error: null, success: null};
 
 export default function useApi() {
   const [isLoading, setLoading] = useState(false);
   const [alert, setAlert] = useState({...resetAlert});
-  const { accessToken: accessTokenData } = use(AuthContext);
+  // const { accessToken: accessTokenData } = use(AuthContext);
+  const accessTokenData = useSelector(store => store.auth.accessToken);
   const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
   const makeRequest = useCallback(async (request, callBack) => {

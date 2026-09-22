@@ -1,13 +1,15 @@
-import { useContext, useReducer } from "react";
+import { useReducer } from "react";
 import { Card } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
-import AuthContext from "../../store/auth-context";
+// import AuthContext from "../../store/auth-context";
 import { minPasswordLength, validateEMail} from "../../utilities/helper";
 import CardLayout from "../layout/CardLayout";
 import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
+import { authActions } from "../../store/auth";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -45,7 +47,8 @@ export default function Login() {
     stay_logged_in: { value: false },
     isValid: false,
   });
-  const authCtx = useContext(AuthContext);
+  // const authCtx = useContext(AuthContext);
+  const dispatch = useDispatch();
   const { isLoading, alert, makeRequest: loginRequest } = useApi();
   const emailFieldHandler = (event) => {
     formDispatcher({
@@ -75,7 +78,8 @@ export default function Login() {
           response.hasOwnProperty("user") &&
           response.hasOwnProperty("access_token")
         ) {
-          authCtx.setLoggedInData(response);
+          dispatch(authActions.setLoggedInData(response));
+          // authCtx.setLoggedInData(response);
         }else{
           console.error('Server Response Data Error: ', response);
         }

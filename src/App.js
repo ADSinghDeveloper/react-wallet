@@ -1,7 +1,8 @@
-import { use, useEffect } from "react";
+import { useEffect } from "react";
 import { HashRouter, Route, Redirect } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import AuthContext from "./store/auth-context";
+// import AuthContext from "./store/auth-context";
 import Login from "./components/views/Login";
 import Register from "./components/views/Register";
 import Dashboard from "./components/views/Dashboard";
@@ -12,9 +13,12 @@ import { Col, Row } from "react-bootstrap";
 import { getLocalAuthKey } from "./utilities/helper";
 import useApi from "./hooks/use-api";
 import Loader from "./components/Loader";
+import { authActions } from "./store/auth";
 
 function App() {
-  const { isLoggedIn, setLoggedInData } = use(AuthContext);
+  // const { isLoggedIn, setLoggedInData } = use(AuthContext);
+  const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
+  const dispatch = useDispatch();
   const { isLoading, makeRequest: authProfileRequest } = useApi();
 
   useEffect(() => {
@@ -29,11 +33,12 @@ function App() {
           ...localAuthKey,
         },
         (response) => {
-          setLoggedInData({user: {...response}, ...localAuthKey});
+          dispatch(authActions.setLoggedInData({user: {...response}, ...localAuthKey}));
+          // setLoggedInData({user: {...response}, ...localAuthKey});
         },
       );
     }
-  }, [isLoggedIn, authProfileRequest, setLoggedInData]);
+  }, [isLoggedIn, authProfileRequest, dispatch]);
 
   return (
     <>

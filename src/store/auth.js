@@ -1,29 +1,26 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { delBrowserAuthKey, setBrowserAuthKey } from "../utilities/helper";
 
-const initialState = {
+const initialAuthState = {
   isLoggedIn: null,
   isRootUser: null,
-  isAppLoaded: false,
-  accessToken: { token: "", type: "" },
+  accessToken: { access_token: "", token_type: "" },
   authUser: { name: "" },
 };
 
 const authSlice = createSlice({
   name: "auth",
-  initialState, // JS short-code of initialState : initialState,
+  initialState: initialAuthState, // Can also use JS short-code of initialState : initialState,
   reducers: {
     setLoggedInData: (state, action) => {
+      // We can immutate state object here in redux toolkit because it handles immutated object internally.
       state.isLoggedIn = true;
-      state.authUser = action.payload.user;
+      state.authUser = {...action.payload.user};
       state.isRootUser = action.payload.user.id === 1;
       state.accessToken = {
-        token: action.payload.access_token,
-        type: action.payload.token_type,
+        access_token: action.payload.access_token,
+        token_type: action.payload.token_type,
       };
-      if(action.appLoaded){
-        state.isAppLoaded = true;
-      }
       setBrowserAuthKey(state.accessToken);
     },
     updateAuthUser: (state, action) => {
@@ -31,7 +28,7 @@ const authSlice = createSlice({
     },
     logout: () => {
       delBrowserAuthKey();
-      return { ...initialState, isLoggedIn: false, isRootUser: false };
+      return { ...initialAuthState, isLoggedIn: false, isRootUser: false };
     },
   },
 });

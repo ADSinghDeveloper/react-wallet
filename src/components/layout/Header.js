@@ -1,21 +1,26 @@
-import { use, useState } from "react";
+import { useState } from "react";
 import { Container, Navbar, Nav, NavLink as NavbarLink } from "react-bootstrap";
 import { BoxArrowRight, PersonCircle } from "react-bootstrap-icons";
 import { NavLink } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
 
-import AuthContext from "../../store/auth-context";
+// import AuthContext from "../../store/auth-context";
 import Modal from "../Modal";
 import Profile from "../views/Profile";
 import useApi from "../../hooks/use-api";
+import { authActions } from "../../store/auth";
 
 const Header = () => {
-  const { logout, authUser } = use(AuthContext);
+  // const { logout, authUser } = use(AuthContext);
+  const dispatch = useDispatch();
+  const authUser = useSelector(store => store.auth.authUser);
   const [showProfile, setShowProfile] = useState(false);
   const {makeRequest: logoutRequest} = useApi();
 
   const logoutHandler = () => {
     logoutRequest({url: "logout", method: "post"}, () => {
-        logout();
+        // logout();
+        dispatch(authActions.logout());
       });
   };
 

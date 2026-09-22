@@ -1,10 +1,12 @@
-import { useContext, useReducer } from "react";
+import { useReducer } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 import { minPasswordLength, validateEMail } from "../../utilities/helper";
-import AuthContext from "../../store/auth-context";
+// import AuthContext from "../../store/auth-context";
 import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
+import { authActions } from "../../store/auth";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -80,7 +82,9 @@ const formReducer = (state, action) => {
 };
 
 const Profile = (props) => {
-  const {authUser, profileUpdate} = useContext(AuthContext);
+  // const {authUser, profileUpdate} = useContext(AuthContext);
+  const authUser = useSelector(store => store.auth.authUser);
+  const dispatch = useDispatch();
   const {isLoading, alert, makeRequest: profileUpdateRequest, setAlert} = useApi();
   const defaultForm = {
     id: { value: authUser.id },
@@ -138,7 +142,8 @@ const Profile = (props) => {
 
       }, (response) => {
         if (!response.error && response.hasOwnProperty("user")) {
-          profileUpdate({ user: response.user });
+          // profileUpdate({ user: {...response.user}});
+          dispatch(authActions.updateAuthUser({ user: {...response.user}}));
           formDispatcher({ type: "RESET" });
           setAlert({success: "Profile updated successfully."});
           // props.onClose();

@@ -1,13 +1,15 @@
-import { useContext, useReducer, useState } from "react";
+import { useReducer, useState } from "react";
 import { Card } from "react-bootstrap";
 import { NavLink } from "react-router-dom";
+import { useDispatch } from "react-redux";
 
 import { minPasswordLength, validateEMail } from "../../utilities/helper";
 import CardLayout from "../layout/CardLayout";
-import AuthContext from "../../store/auth-context";
+// import AuthContext from "../../store/auth-context";
 import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
+import { authActions } from "../../store/auth";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -71,7 +73,8 @@ const Register = () => {
     isValid: false,
   });
 
-  const authCtx = useContext(AuthContext);
+  // const authCtx = useContext(AuthContext);
+  const dispatch = useDispatch();
   const [emailError, setEmailError] = useState(null);
   const { isLoading, alert, makeRequest: registerRequest } = useApi();
 
@@ -119,7 +122,8 @@ const Register = () => {
 
       registerRequest({ url: "register", method: "post", params: regData }, (response) => {
           if ( response.hasOwnProperty("user") && typeof response.user != "undefined" ) {
-            authCtx.setLoggedInData(response);
+            // authCtx.setLoggedInData(response);
+            dispatch(authActions.setLoggedInData(response));
           } else if (response.hasOwnProperty("email")) {
             setEmailError(response.email);
           } else {
