@@ -1,6 +1,6 @@
 import { useReducer, useState } from "react";
 import { Card } from "react-bootstrap";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 
 import { minPasswordLength, validateEMail } from "../../utilities/helper";
@@ -9,7 +9,7 @@ import CardLayout from "../layout/CardLayout";
 import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
-import { authActions } from "../../store/auth";
+import { authActions } from "../../store/redux/auth";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -77,6 +77,7 @@ const Register = () => {
   const dispatch = useDispatch();
   const [emailError, setEmailError] = useState(null);
   const { isLoading, alert, makeRequest: registerRequest } = useApi();
+  const navigate = useNavigate();
 
   const nameHandler = (event) => {
     formDispatcher({ type: "NAME_VALIDATION", value: event.target.value });
@@ -124,6 +125,7 @@ const Register = () => {
           if ( response.hasOwnProperty("user") && typeof response.user != "undefined" ) {
             // authCtx.setLoggedInData(response);
             dispatch(authActions.setLoggedInData(response));
+            navigate("/");
           } else if (response.hasOwnProperty("email")) {
             setEmailError(response.email);
           } else {

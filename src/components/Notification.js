@@ -1,7 +1,7 @@
 import React from "react";
 import { Toast, ToastContainer } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { notificationActions } from "../store/notification";
+import { notificationActions } from "../store/redux/notification";
 
 const Notification = () => {
     const dispatch = useDispatch();

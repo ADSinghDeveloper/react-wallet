@@ -1,14 +1,14 @@
 import { useState } from "react";
 import { Container, Navbar, Nav, NavLink as NavbarLink } from "react-bootstrap";
 import { BoxArrowRight, PersonCircle } from "react-bootstrap-icons";
-import { NavLink } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 // import AuthContext from "../../store/auth-context";
 import Modal from "../Modal";
 import Profile from "../views/Profile";
 import useApi from "../../hooks/use-api";
-import { authActions } from "../../store/auth";
+import { authActions } from "../../store/redux/auth";
 
 const Header = () => {
   // const { logout, authUser } = use(AuthContext);
@@ -16,11 +16,13 @@ const Header = () => {
   const authUser = useSelector(store => store.auth.authUser);
   const [showProfile, setShowProfile] = useState(false);
   const {makeRequest: logoutRequest} = useApi();
+  const navigate = useNavigate();
 
   const logoutHandler = () => {
     logoutRequest({url: "logout", method: "post"}, () => {
         // logout();
         dispatch(authActions.logout());
+        navigate("/login");
       });
   };
 
@@ -35,7 +37,7 @@ const Header = () => {
       >
         <Container>
           <Navbar.Brand as="span">
-            <NavLink to="/" className="navbar-brand fw-medium">
+            <NavLink to="/" end className="navbar-brand fw-medium">
               Wallet
             </NavLink>
           </Navbar.Brand>
@@ -48,6 +50,7 @@ const Header = () => {
                 <NavbarLink onClick={() => setShowProfile(true)} title={`${authUser.name || "User"}'s Profile`}>
                   <PersonCircle />
                 </NavbarLink>
+                <NavLink to="/accounts" className="nav-link">Accounts</NavLink>
                 <NavbarLink onClick={logoutHandler}>
                   <BoxArrowRight />
                 </NavbarLink>

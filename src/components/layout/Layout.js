@@ -1,18 +1,24 @@
-import React, { Fragment } from "react";
 import { Row, Container, Col } from "react-bootstrap";
 import Header from "./Header";
+import { useSelector } from "react-redux";
+import Notification from "../Notification";
+import { Outlet } from "react-router-dom";
 
-const Layout = (props) => {
+const Layout = ({children}) => {
+  const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
 
   return (
-    <Fragment>
-      <Header />
+    <>
+      {isLoggedIn && <Header />}
       <Container>
-        <Row>
-          <Col lg={12} className="my-3">{props.children}</Col>
+        <Row className={`${!isLoggedIn ? 'center-box' : ''}`}>
+          <Col lg={12} className="my-3">
+            {children ? children : <Outlet />}
+          </Col>
         </Row>
       </Container>
-    </Fragment>
+      <Notification />
+    </>
   );
 };
 

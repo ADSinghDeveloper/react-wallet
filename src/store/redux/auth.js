@@ -1,5 +1,5 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { delBrowserAuthKey, setBrowserAuthKey } from "../utilities/helper";
+import { delBrowserAuthKey, setBrowserAuthKey } from "../../utilities/helper";
 
 const initialAuthState = {
   isLoggedIn: null,

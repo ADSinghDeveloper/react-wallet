@@ -6,7 +6,7 @@ import { minPasswordLength, validateEMail } from "../../utilities/helper";
 import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
-import { authActions } from "../../store/auth";
+import { authActions } from "../../store/redux/auth";
 
 const formReducer = (state, action) => {
   switch (action.type) {

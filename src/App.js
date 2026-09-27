@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import { HashRouter, Route, Redirect } from "react-router-dom";
+import { createBrowserRouter, RouterProvider } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 // import AuthContext from "./store/auth-context";
@@ -8,12 +8,31 @@ import Register from "./components/views/Register";
 import Dashboard from "./components/views/Dashboard";
 import Profile from "./components/views/Profile";
 import Layout from "./components/layout/Layout";
-import Notification from "./components/Notification";
-import { Col, Row } from "react-bootstrap";
+import ErrorPage from "./components/views/ErrorPage";
 import { getLocalAuthKey } from "./utilities/helper";
 import useApi from "./hooks/use-api";
 import Loader from "./components/Loader";
-import { authActions } from "./store/auth";
+import { authActions } from "./store/redux/auth";
+import Accounts from "./components/views/Accounts";
+import AccountDetails from "./components/views/AccountDetails";
+import accountsLoader from "./components/views/accounts-loader";
+import accountDetailsLoader from "./components/views/account-details-loader";
+
+const router = createBrowserRouter([
+  {
+    path: '/',
+    element: <Layout />,
+    errorElement: <ErrorPage />,
+    children: [
+      { index: true, element: <Dashboard />}, // same exactly as parent path.
+      { path: '/profile', element: <Profile />},
+      { path: '/login', element: <Login />},
+      { path: '/register', element: <Register />},
+      { path: "accounts", element: <Accounts />, loader: accountsLoader, id: "accounts-list"},
+      { path: "accounts/:accId", element: <AccountDetails />, loader: accountDetailsLoader},
+    ]
+  }
+]);
 
 function App() {
   // const { isLoggedIn, setLoggedInData } = use(AuthContext);
@@ -33,48 +52,19 @@ function App() {
           ...localAuthKey,
         },
         (response) => {
-          dispatch(authActions.setLoggedInData({user: {...response}, ...localAuthKey}));
+          dispatch(
+            authActions.setLoggedInData({
+              user: { ...response },
+              ...localAuthKey,
+            }),
+          );
           // setLoggedInData({user: {...response}, ...localAuthKey});
         },
       );
     }
   }, [isLoggedIn, authProfileRequest, dispatch]);
 
-  return (
-    <>
-      {isLoggedIn ? (
-        <Layout>
-          <HashRouter>
-            <Route path="/" exact>
-              <Dashboard />
-            </Route>
-            <Route path="/profile">
-              <Profile />
-            </Route>
-            {/* <Route path="*"><PageNotFound /></Route> */}
-            <Redirect to="/" />
-          </HashRouter>
-        </Layout>
-      ) : ( isLoading ? <div className="center-box"><Loader /></div> :
-        <div className="center-box">
-          <Row>
-            <Col lg={12}>
-              <HashRouter>
-                <Route path="/login">
-                  <Login />
-                </Route>
-                <Route path="/register">
-                  <Register />
-                </Route>
-                <Redirect to="login" />
-              </HashRouter>
-            </Col>
-          </Row>
-        </div>
-      )}
-      <Notification />
-    </>
-  );
+  return isLoading ? <Loader /> : <RouterProvider router={router} />
 }
 
 export default App;
