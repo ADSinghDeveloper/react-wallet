@@ -14,13 +14,13 @@ export default function useApi() {
   const makeRequest = useCallback(async (request, callBack) => {
     setLoading(true);
     setAlert({...resetAlert});
+    const authToken = request.access_token? `${request.token_type} ${request.access_token}` : `${accessTokenData.token_type} ${accessTokenData.access_token}`;
 
     let options = {
       headers: {
           "Accept": "application/json",
           "Content-Type": "application/json;charset=UTF-8",
-          "Authorization": request.access_token? `${request.token_type} ${request.access_token}` : `${accessTokenData.token_type} ${accessTokenData.access_token}`,
-          // "Authorization": accessTokenData.token && `${accessTokenData.type} ${accessTokenData.token}`
+          "Authorization": authToken,
         }
     };
 

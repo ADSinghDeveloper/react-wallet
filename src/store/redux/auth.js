@@ -1,5 +1,4 @@
 import { createSlice } from "@reduxjs/toolkit";
-import { delBrowserAuthKey, setBrowserAuthKey } from "../../utilities/helper";
 
 const initialAuthState = {
   isLoggedIn: null,
@@ -21,13 +20,11 @@ const authSlice = createSlice({
         access_token: action.payload.access_token,
         token_type: action.payload.token_type,
       };
-      setBrowserAuthKey(state.accessToken);
     },
     updateAuthUser: (state, action) => {
       state.authUser = action.payload.user;
     },
     logout: () => {
-      delBrowserAuthKey();
       return { ...initialAuthState, isLoggedIn: false, isRootUser: false };
     },
   },

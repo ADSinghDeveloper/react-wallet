@@ -1,7 +1,7 @@
-import { useReducer } from "react";
+import { useEffect, useReducer } from "react";
 import { Card } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 // import AuthContext from "../../store/auth-context";
 import { minPasswordLength, validateEMail} from "../../utilities/helper";
@@ -10,6 +10,7 @@ import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
 import { authActions } from "../../store/redux/auth";
+import Layout from "../layout/Layout";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -51,6 +52,13 @@ export default function Login() {
   const dispatch = useDispatch();
   const { isLoading, alert, makeRequest: loginRequest } = useApi();
   const navigate = useNavigate();
+  const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
+
+  useEffect(() => {
+    if(isLoggedIn){
+      navigate("/");
+    }
+  },[isLoggedIn, navigate]);
 
   const emailFieldHandler = (event) => {
     formDispatcher({
@@ -90,7 +98,7 @@ export default function Login() {
     }
   };
 
-  return (
+  return (<Layout>
     <CardLayout title="Login">
       <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} submitButtonText="Log In" isDisabled={!formState.isValid}>
         <Input
@@ -132,5 +140,5 @@ export default function Login() {
         <NavLink to="/register" className="text-decoration-none">Create here.</NavLink>
       </Card.Text>
     </CardLayout>
-  );
+  </Layout>);
 };

@@ -6,7 +6,7 @@ import "./index.css";
 
 import App from "./App";
 import { Provider } from "react-redux";
-import store from "./store/redux/store";
+import store from "./store/redux/main";
 import reportWebVitals from "./reportWebVitals";
 import { AuthContextProvider } from "./store/auth-context";
 

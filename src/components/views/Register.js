@@ -1,7 +1,7 @@
-import { useReducer, useState } from "react";
+import { useEffect, useReducer, useState } from "react";
 import { Card } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import { minPasswordLength, validateEMail } from "../../utilities/helper";
 import CardLayout from "../layout/CardLayout";
@@ -10,6 +10,7 @@ import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
 import { authActions } from "../../store/redux/auth";
+import Layout from "../layout/Layout";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -78,6 +79,13 @@ const Register = () => {
   const [emailError, setEmailError] = useState(null);
   const { isLoading, alert, makeRequest: registerRequest } = useApi();
   const navigate = useNavigate();
+  const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
+
+  useEffect(() => {
+    if(isLoggedIn){
+      navigate("/");
+    }
+  },[isLoggedIn, navigate]);
 
   const nameHandler = (event) => {
     formDispatcher({ type: "NAME_VALIDATION", value: event.target.value });
@@ -136,7 +144,7 @@ const Register = () => {
     }
   };
 
-  return (
+  return (<Layout>
   <CardLayout title="Create Account">
       <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} isDisabled={!formState.isValid} submitButtonText="Create Account">
         <Input 
@@ -206,7 +214,7 @@ const Register = () => {
       <NavLink to="/login" className="text-decoration-none">Login here.</NavLink>
     </Card.Text>
   </CardLayout>
-  );
+  </Layout>);
 };
 
 export default Register;

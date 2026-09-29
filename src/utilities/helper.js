@@ -14,11 +14,9 @@ export function base64Encode(str) {
 
 const rwamKey = "rwam";
 
-window.addEventListener("beforeunload", (e) => {
-  if (window.hasOwnProperty(rwamKey)) {
-    localStorage.setItem(rwamKey, JSON.stringify(window[rwamKey]));
-  }
-});
+export function setLocalAuthKey(token) {
+  localStorage.setItem(rwamKey, JSON.stringify(token));
+}
 
 export function getLocalAuthKey() {
   return JSON.parse(localStorage.getItem(rwamKey));
@@ -26,13 +24,4 @@ export function getLocalAuthKey() {
 
 export function removeLocalAuthKey() {
   localStorage.removeItem(rwamKey);
-}
-
-export function setBrowserAuthKey(token) {
-  removeLocalAuthKey();
-  window[rwamKey] = token;
-}
-
-export function delBrowserAuthKey() {
-  delete window[rwamKey];
 }
