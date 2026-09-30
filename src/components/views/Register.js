@@ -10,7 +10,6 @@ import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
 import { authActions } from "../../store/redux/auth";
-import Layout from "../layout/Layout";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -137,6 +136,7 @@ const Register = () => {
           if ( response.hasOwnProperty("user") && typeof response.user != "undefined" ) {
             // authCtx.setLoggedInData(response);
             dispatch(authActions.setLoggedInData(response));
+            navigate("/");
           } else if (response.hasOwnProperty("email")) {
             setEmailError(response.email);
           } else {

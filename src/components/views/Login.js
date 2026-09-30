@@ -10,7 +10,6 @@ import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
 import { authActions } from "../../store/redux/auth";
-import Layout from "../layout/Layout";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -94,6 +93,7 @@ export default function Login() {
         ) {
           dispatch(authActions.setLoggedInData(response));
           // authCtx.setLoggedInData(response);
+          navigate("/");
         }else{
           console.error('Server Response Data Error: ', response);
         }
@@ -101,7 +101,7 @@ export default function Login() {
     }
   };
 
-  return (<Layout>
+  return (
     <CardLayout title="Login">
       <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} submitButtonText="Log In" isDisabled={!formState.isValid}>
         <Input
@@ -143,5 +143,5 @@ export default function Login() {
         <NavLink to="/register" className="text-decoration-none">Create here.</NavLink>
       </Card.Text>
     </CardLayout>
-  </Layout>);
+  );
 };

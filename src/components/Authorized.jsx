@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import Layout from "./layout/Layout";
@@ -13,7 +13,8 @@ export default function Authorized() {
   // const { isLoggedIn, setLoggedInData, accessToken } = use(AuthContext);
   const accessToken = useSelector(store => store.auth.accessToken);
   const dispatch = useDispatch();
-  const { isLoading, makeRequest: authProfileRequest } = useApi();
+  const { makeRequest: authProfileRequest} = useApi();
+  const [checkingAuth, setCheckingAuth] = useState(true);
 
   useEffect(() => {
     // Logged-in users can reload the browser manually and get login again automatically
@@ -27,11 +28,14 @@ export default function Authorized() {
       authProfileRequest({ url: "profile", ...localAuthKey }, (response) => {
         dispatch( authActions.setLoggedInData({ user: { ...response }, ...localAuthKey }));
         // setLoggedInData({user: {...response}, ...localAuthKey});
+        setCheckingAuth(false);
         removeLocalAuthKey();
       });
+    }else{
+      setCheckingAuth(false);
     }
 
-    if(!isLoggedIn){
+    if(!checkingAuth && !isLoggedIn){
       navigate("/login");
     }
 
@@ -46,7 +50,7 @@ export default function Authorized() {
     return () => {
         window.removeEventListener("beforeunload", handleBeforeUnload);
     }
-  }, [isLoggedIn, authProfileRequest, dispatch, navigate, accessToken]);
+  }, [checkingAuth, isLoggedIn, authProfileRequest, dispatch, navigate, accessToken]);
 
-  return <Layout>{isLoading ? <Loader /> : <Outlet />}</Layout>
+  return <Layout>{checkingAuth? <Loader /> : <Outlet /> }</Layout>
 }
