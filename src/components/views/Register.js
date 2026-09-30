@@ -87,6 +87,10 @@ const Register = () => {
     }
   },[isLoggedIn, navigate]);
 
+  if(isLoggedIn){
+    return <></>;
+  }
+
   const nameHandler = (event) => {
     formDispatcher({ type: "NAME_VALIDATION", value: event.target.value });
   };
@@ -133,7 +137,6 @@ const Register = () => {
           if ( response.hasOwnProperty("user") && typeof response.user != "undefined" ) {
             // authCtx.setLoggedInData(response);
             dispatch(authActions.setLoggedInData(response));
-            navigate("/");
           } else if (response.hasOwnProperty("email")) {
             setEmailError(response.email);
           } else {
@@ -144,7 +147,7 @@ const Register = () => {
     }
   };
 
-  return (<Layout>
+  return (
   <CardLayout title="Create Account">
       <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} isDisabled={!formState.isValid} submitButtonText="Create Account">
         <Input 
@@ -214,7 +217,7 @@ const Register = () => {
       <NavLink to="/login" className="text-decoration-none">Login here.</NavLink>
     </Card.Text>
   </CardLayout>
-  </Layout>);
+  );
 };
 
 export default Register;

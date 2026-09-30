@@ -60,6 +60,10 @@ export default function Login() {
     }
   },[isLoggedIn, navigate]);
 
+  if(isLoggedIn){
+    return <></>;
+  }
+
   const emailFieldHandler = (event) => {
     formDispatcher({
       type: "EMAIL_VALIDATION",
@@ -90,7 +94,6 @@ export default function Login() {
         ) {
           dispatch(authActions.setLoggedInData(response));
           // authCtx.setLoggedInData(response);
-          navigate("/");
         }else{
           console.error('Server Response Data Error: ', response);
         }

@@ -9,13 +9,14 @@ import Modal from "../Modal";
 import Profile from "../views/Profile";
 import useApi from "../../hooks/use-api";
 import { authActions } from "../../store/redux/auth";
+import Loader from "../Loader";
 
 const Header = () => {
   // const { logout, authUser } = use(AuthContext);
   const dispatch = useDispatch();
   const authUser = useSelector(store => store.auth.authUser);
   const [showProfile, setShowProfile] = useState(false);
-  const {makeRequest: logoutRequest} = useApi();
+  const {makeRequest: logoutRequest, isLoading} = useApi();
   const navigate = useNavigate();
 
   const logoutHandler = () => {
@@ -70,13 +71,14 @@ const Header = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      <Modal
+      {showProfile && <Modal
         show={showProfile}
         onClose={() => setShowProfile(false)}
         title="Profile"
       >
         <Profile onClose={() => setShowProfile(false)} />
-      </Modal>
+      </Modal>}
+      {isLoading && <Modal show={isLoading} title="Logging Out"><Loader /></Modal>}
     </>
   );
 };
