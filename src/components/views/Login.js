@@ -87,12 +87,10 @@ export default function Login() {
       };
 
       loginRequest({ url: "login", method: 'post', params: loginData },(response) => {
-        if (
-          response.hasOwnProperty("user") &&
-          response.hasOwnProperty("access_token")
-        ) {
-          dispatch(authActions.setLoggedInData(response));
-          // authCtx.setLoggedInData(response);
+        if ( "user" in response && "access_token" in response ) {
+          const loggedInData = { user: {...response.user}, accessToken: `${response.token_type} ${response.access_token}`};
+          dispatch(authActions.setLoggedInData(loggedInData));
+          // authCtx.setLoggedInData(loggedInData);
           navigate("/");
         }else{
           console.error('Server Response Data Error: ', response);

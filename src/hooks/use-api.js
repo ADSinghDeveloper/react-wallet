@@ -3,18 +3,18 @@ import { useCallback, useState } from "react";
 import { useSelector } from "react-redux";
 
 const resetAlert = {error: null, success: null};
+export const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
 export default function useApi() {
   const [isLoading, setLoading] = useState(false);
   const [alert, setAlert] = useState({...resetAlert});
   // const { accessToken: accessTokenData } = use(AuthContext);
-  const accessTokenData = useSelector(store => store.auth.accessToken);
-  const apiHost = process.env.REACT_APP_API_ENDPOINT;
+  const accessToken = useSelector(store => store.auth.accessToken);
 
   const makeRequest = useCallback(async (request, callBack) => {
     setLoading(true);
     setAlert({...resetAlert});
-    const authToken = request.access_token? `${request.token_type} ${request.access_token}` : `${accessTokenData.token_type} ${accessTokenData.access_token}`;
+    const authToken = request.accessToken || accessToken;
 
     let options = {
       headers: {
@@ -61,7 +61,7 @@ export default function useApi() {
         setLoading(false);
         setAlert({error: error.message});
       }
-  }, [apiHost, accessTokenData]);
+  }, [accessToken]);
 
   return { isLoading, makeRequest, alert, setAlert };
 };

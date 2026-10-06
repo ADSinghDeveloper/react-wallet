@@ -3,7 +3,7 @@ import { createSlice } from "@reduxjs/toolkit";
 const initialAuthState = {
   isLoggedIn: null,
   isRootUser: null,
-  accessToken: { access_token: "", token_type: "" },
+  accessToken: null,
   authUser: { name: "" },
 };
 
@@ -16,10 +16,7 @@ const authSlice = createSlice({
       state.isLoggedIn = true;
       state.authUser = {...action.payload.user};
       state.isRootUser = action.payload.user.id === 1;
-      state.accessToken = {
-        access_token: action.payload.access_token,
-        token_type: action.payload.token_type,
-      };
+      state.accessToken = action.payload.accessToken;
     },
     updateAuthUser: (state, action) => {
       state.authUser = action.payload.user;

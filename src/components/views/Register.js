@@ -133,9 +133,10 @@ const Register = () => {
       };
 
       registerRequest({ url: "register", method: "post", params: regData }, (response) => {
-          if ( response.hasOwnProperty("user") && typeof response.user != "undefined" ) {
-            // authCtx.setLoggedInData(response);
-            dispatch(authActions.setLoggedInData(response));
+          if ( Object.hasOwn(response, "user") && !response.user ) {
+            const loggedInData = { user: {...response.user}, accessToken: `${response.token_type} ${response.access_token}`};
+            dispatch(authActions.setLoggedInData(loggedInData));
+            // authCtx.setLoggedInData(loggedInData);
             navigate("/");
           } else if (response.hasOwnProperty("email")) {
             setEmailError(response.email);

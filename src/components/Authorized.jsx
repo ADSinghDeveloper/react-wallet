@@ -24,10 +24,10 @@ export default function Authorized() {
 
     const localAuthKey = getLocalAuthKey();
 
-    if (localAuthKey?.access_token) {
-      authProfileRequest({ url: "profile", ...localAuthKey }, (response) => {
-        dispatch( authActions.setLoggedInData({ user: { ...response }, ...localAuthKey }));
-        // setLoggedInData({user: {...response}, ...localAuthKey});
+    if (localAuthKey) {
+      authProfileRequest({ url: "profile", accessToken: localAuthKey }, (response) => {
+        dispatch( authActions.setLoggedInData({ user: { ...response }, accessToken: localAuthKey }));
+        // setLoggedInData({user: {...response}, accessToken: localAuthKey});
         setCheckingAuth(false);
         removeLocalAuthKey();
       });
