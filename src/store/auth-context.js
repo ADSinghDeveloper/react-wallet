@@ -2,7 +2,6 @@ import { createContext, useMemo, useReducer } from "react";
 
 const initialState = {
   isLoggedIn: null,
-  accessToken: null,
   authUser: { name: "" },
 };
 
@@ -19,7 +18,6 @@ function authReducer(state,action){
       ...state,
       isLoggedIn: true,
       authUser: {...action.payload.user},
-      accessToken: action.payload.accessToken,
     }
   }
   if(action.type === "LOGOUT"){

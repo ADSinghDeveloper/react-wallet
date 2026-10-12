@@ -7,25 +7,31 @@ import { useDispatch, useSelector } from "react-redux";
 // import AuthContext from "../../store/auth-context";
 import Modal from "../Modal";
 import Profile from "../views/Profile";
-import useApi from "../../hooks/use-api";
 import { authActions } from "../../store/redux/auth";
 import Loader from "../Loader";
+import { useMutation } from "@tanstack/react-query";
+import fetchApi, { queryClient, setAuthToken } from "../../utilities/fetch-api";
+import { notificationActions } from "../../store/redux/notification";
 
 const Header = () => {
   // const { logout, authUser } = use(AuthContext);
   const dispatch = useDispatch();
-  const authUser = useSelector(store => store.auth.authUser);
+  const { authUser } = useSelector(store => store.auth);
   const [showProfile, setShowProfile] = useState(false);
-  const {makeRequest: logoutRequest, isLoading} = useApi();
   const navigate = useNavigate();
+  const { mutate, isPending } = useMutation({
+    mutationFn: fetchApi,
+    onSuccess: (data) => {
+      setAuthToken(null);
+      dispatch(authActions.logout());
+      dispatch(notificationActions.send({ type: "success", title: "Logout", message: data?.success || "Logged-out successfully!"}));
+      // queryClient.invalidateQueries({ refetchType: "none"});
+      queryClient.setQueryData(["autoLogin"], null);
+      navigate("/login");
+    }
+  });
 
-  const logoutHandler = () => {
-    logoutRequest({url: "logout", method: "post"}, () => {
-        // logout();
-        dispatch(authActions.logout());
-        navigate("/login");
-      });
-  };
+  const logoutHandler = () => mutate({ url: "logout", method: "post"});
 
   return (
     <>
@@ -48,10 +54,11 @@ const Header = () => {
             className="justify-content-end"
           >
             <Nav>
+                <NavLink to="/" className="nav-link">Dashboard</NavLink>
+                <NavLink to="/accounts" className="nav-link">Accounts</NavLink>
                 <NavbarLink onClick={() => setShowProfile(true)} title={`${authUser.name || "User"}'s Profile`}>
                   <PersonCircle />
                 </NavbarLink>
-                <NavLink to="/accounts" className="nav-link">Accounts</NavLink>
                 <NavbarLink onClick={logoutHandler}>
                   <BoxArrowRight />
                 </NavbarLink>
@@ -78,7 +85,7 @@ const Header = () => {
       >
         <Profile onClose={() => setShowProfile(false)} />
       </Modal>}
-      {isLoading && <Modal show={isLoading} title="Logging Out"><Loader /></Modal>}
+      {isPending && <Modal show={isPending} title="Logging Out"><Loader /></Modal>}
     </>
   );
 };

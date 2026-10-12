@@ -2,14 +2,15 @@ import { useEffect, useReducer, useState } from "react";
 import { Card } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useMutation } from "@tanstack/react-query";
 
 import { minPasswordLength, validateEMail } from "../../utilities/helper";
 import CardLayout from "../layout/CardLayout";
 // import AuthContext from "../../store/auth-context";
-import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
 import { authActions } from "../../store/redux/auth";
+import fetchApi, { queryClient, setAuthToken } from "../../utilities/fetch-api";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -76,7 +77,20 @@ const Register = () => {
   // const authCtx = useContext(AuthContext);
   const dispatch = useDispatch();
   const [emailError, setEmailError] = useState(null);
-  const { isLoading, alert, makeRequest: registerRequest } = useApi();
+  const { mutate, isPending, error } = useMutation({
+    mutationFn: fetchApi,
+    onSuccess: (data) => {
+      if ( Object.hasOwn(data, "user") && "access_token" in data ) {
+        setAuthToken(`${data.token_type} ${data.access_token}`);
+        dispatch(authActions.setLoggedInData(data));
+        // authCtx.setLoggedInData(data);
+        navigate("/");
+      } else if ("email" in data) {
+        setEmailError(data.email);
+      }
+      queryClient.invalidateQueries({ refetchType: "none"});
+    }
+  });
   const navigate = useNavigate();
   const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
 
@@ -132,25 +146,13 @@ const Register = () => {
         password_confirmation: formState.cpassword.value,
       };
 
-      registerRequest({ url: "register", method: "post", params: regData }, (response) => {
-          if ( Object.hasOwn(response, "user") && !response.user ) {
-            const loggedInData = { user: {...response.user}, accessToken: `${response.token_type} ${response.access_token}`};
-            dispatch(authActions.setLoggedInData(loggedInData));
-            // authCtx.setLoggedInData(loggedInData);
-            navigate("/");
-          } else if (response.hasOwnProperty("email")) {
-            setEmailError(response.email);
-          } else {
-            console.error(response);
-          }
-        }
-      );
+      mutate({ url: "register", method: "post", body: regData });
     }
   };
 
   return (
   <CardLayout title="Create Account">
-      <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} isDisabled={!formState.isValid} submitButtonText="Create Account">
+      <Reform onSubmit={submitHandler} alert={{ error: error?.message }} isLoading={isPending} isDisabled={!formState.isValid} submitButtonText="Create Account">
         <Input 
           id="name"
           label="Name" 

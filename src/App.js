@@ -1,5 +1,6 @@
 import { lazy, Suspense} from "react";
 import { createBrowserRouter, RouterProvider } from "react-router-dom";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 import Login from "./components/views/Login";
 // import Register from "./components/views/Register";
@@ -12,6 +13,7 @@ import AccountDetails from "./components/views/AccountDetails";
 import accountsLoader from "./components/views/accounts-loader";
 import accountDetailsLoader from "./components/views/account-details-loader";
 import Authorized from "./components/Authorized";
+import { queryClient } from "./utilities/fetch-api";
 
 const Register = lazy(() => import("./components/views/Register"));
 
@@ -29,7 +31,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />
+  return <QueryClientProvider client={queryClient}><RouterProvider router={router} /></QueryClientProvider>
 }
 
 export default App;

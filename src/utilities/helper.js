@@ -1,5 +1,6 @@
 // const pswStrengthRegex = (?=.*[a-z])(?=.*[A-Z])(?=.*[0-9])(?=.*[^A-Za-z0-9])(?=.{8,});
 export const minPasswordLength = 6;
+export const apiHost = process.env.REACT_APP_API_ENDPOINT;
 
 export const validateEMail = (em) => {
     const emailValidRegex = /^[a-zA-Z0-9._-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,4}$/;
@@ -15,13 +16,20 @@ export function base64Encode(str) {
 const rwamKey = "rwam";
 
 export function setLocalAuthKey(token) {
+  if (typeof token !== 'string') return;
   localStorage.setItem(rwamKey, JSON.stringify(token));
 }
 
 export function getLocalAuthKey() {
-  return JSON.parse(localStorage.getItem(rwamKey));
+  let authKey = localStorage.getItem(rwamKey);
+  localStorage.removeItem(rwamKey);
+
+  if(authKey !== "undefined"){
+    return JSON.parse(authKey);
+  }
+  return null;
 }
 
-export function removeLocalAuthKey() {
-  localStorage.removeItem(rwamKey);
+export function isObject(obj){
+  return typeof obj === 'object' && obj != null;
 }

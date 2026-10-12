@@ -12,8 +12,8 @@ const Notification = () => {
     }
 
     return (
-        <ToastContainer className="p-3 fixed-bottom mx-auto text-white text-center">
-          <Toast show={props.show} bg={props.type !== 'error' ? 'success' : 'danger'} onClose={() => { dispatch(notificationActions.close())}} delay={9000} autohide>
+        <ToastContainer className="p-3 position-absolute top-0 end-0 mx-auto text-white text-center">
+          <Toast show={props.show} bg={props.type !== 'error' ? 'success' : 'danger'} onClose={() => { dispatch(notificationActions.close())}} delay={3000} autohide >
           {props.title && <Toast.Header>
               <strong className="me-auto">{props.title}</strong>
               {/* {props.titleSmall && <small className="text-muted">just now</small>} */}

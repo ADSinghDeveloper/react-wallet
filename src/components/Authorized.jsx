@@ -1,56 +1,41 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
+import { useQuery } from "@tanstack/react-query";
+
 import Layout from "./layout/Layout";
-import useApi from "../hooks/use-api";
-import { getLocalAuthKey, removeLocalAuthKey, setLocalAuthKey } from "../utilities/helper";
 import Loader from "./Loader";
 import { authActions } from "../store/redux/auth";
+import fetchApi, { hasAuthToken, setAuthTokenToApiHeader } from "../utilities/fetch-api";
+
+setAuthTokenToApiHeader();
 
 export default function Authorized() {
   const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
   const navigate = useNavigate();
-  // const { isLoggedIn, setLoggedInData, accessToken } = use(AuthContext);
-  const accessToken = useSelector(store => store.auth.accessToken);
   const dispatch = useDispatch();
-  const { makeRequest: authProfileRequest} = useApi();
-  const [checkingAuth, setCheckingAuth] = useState(true);
+  const { data, isLoading } = useQuery({
+    queryKey: ["autoLogin"],
+    queryFn: ({signal}) => fetchApi({ signal, url: "profile" }),
+    enabled: hasAuthToken(),
+    staleTime: 0, // how long the cached data would be stored or retained.
+    gcTime: 0, // garbage collection time.
+    retry: false, // Retry to API request.
+  });
 
   useEffect(() => {
-    // Logged-in users can reload the browser manually and get login again automatically
-    // with their last used authorization API key.
-    // This feature added, just to try if user need to reload the whole app/page.
-    // This is also just for practise useEffect hook.
+    // This feature added, just to try if logged-in users need to reload the browser manually
+    // and get login again automatically with their last used authorization API key.
 
-    const localAuthKey = getLocalAuthKey();
-
-    if (localAuthKey) {
-      authProfileRequest({ url: "profile", accessToken: localAuthKey }, (response) => {
-        dispatch( authActions.setLoggedInData({ user: { ...response }, accessToken: localAuthKey }));
-        // setLoggedInData({user: {...response}, accessToken: localAuthKey});
-        setCheckingAuth(false);
-        removeLocalAuthKey();
-      });
-    }else{
-      setCheckingAuth(false);
+    if(data && "id" in data){
+      dispatch( authActions.setLoggedInData({user: data}) )
     }
 
-    if(!checkingAuth && !isLoggedIn){
+    if(!isLoading && !isLoggedIn){
       navigate("/login");
     }
 
-    const handleBeforeUnload = (event) => {
-      setLocalAuthKey(accessToken);
-    }
+  }, [isLoading, isLoggedIn, navigate, data, dispatch]);
 
-    if(isLoggedIn){
-      window.addEventListener("beforeunload", handleBeforeUnload);
-    }
-
-    return () => {
-        window.removeEventListener("beforeunload", handleBeforeUnload);
-    }
-  }, [checkingAuth, isLoggedIn, authProfileRequest, dispatch, navigate, accessToken]);
-
-  return <Layout>{checkingAuth? <Loader /> : <Outlet /> }</Layout>
+  return <Layout>{isLoading ? <Loader /> : <Outlet /> }</Layout>
 }

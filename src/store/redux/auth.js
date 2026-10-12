@@ -1,9 +1,8 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const initialAuthState = {
-  isLoggedIn: null,
+  isLoggedIn: false,
   isRootUser: null,
-  accessToken: null,
   authUser: { name: "" },
 };
 
@@ -16,13 +15,12 @@ const authSlice = createSlice({
       state.isLoggedIn = true;
       state.authUser = {...action.payload.user};
       state.isRootUser = action.payload.user.id === 1;
-      state.accessToken = action.payload.accessToken;
     },
     updateAuthUser: (state, action) => {
-      state.authUser = action.payload.user;
+      state.authUser = {...action.payload.user};
     },
     logout: () => {
-      return { ...initialAuthState, isLoggedIn: false, isRootUser: false };
+      return { ...initialAuthState };
     },
   },
 });

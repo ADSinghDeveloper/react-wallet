@@ -2,33 +2,27 @@ import { useEffect, useReducer } from "react";
 import { Card } from "react-bootstrap";
 import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
+import { useMutation } from "@tanstack/react-query";
 
-// import AuthContext from "../../store/auth-context";
 import { minPasswordLength, validateEMail} from "../../utilities/helper";
 import CardLayout from "../layout/CardLayout";
-import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
 import { authActions } from "../../store/redux/auth";
+import fetchApi, { queryClient, setAuthToken } from "../../utilities/fetch-api";
 
 const formReducer = (state, action) => {
   switch (action.type) {
     case "EMAIL_VALIDATION":
       state = {
         ...state,
-        email: {
-          value: action.value,
-          isValid: validateEMail(action.value),
-        },
+        email: { value: action.value, isValid: validateEMail(action.value)},
       };
       break;
     case "PSW_VALIDATION":
       state = {
         ...state,
-        password: {
-          value: action.value.trim(),
-          isValid: action.value.trim().length >= minPasswordLength ,
-        },
+        password: { value: action.value.trim(), isValid: action.value.trim().length >= minPasswordLength},
       };
       break;
     default:
@@ -44,14 +38,24 @@ export default function Login() {
   const [formState, formDispatcher] = useReducer(formReducer, {
     email: { value: "", isValid: null, isExists: false },
     password: { value: "", isValid: null },
-    stay_logged_in: { value: false },
     isValid: false,
   });
-  // const authCtx = useContext(AuthContext);
   const dispatch = useDispatch();
-  const { isLoading, alert, makeRequest: loginRequest } = useApi();
   const navigate = useNavigate();
   const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
+  const { mutate, isError, error, isPending } = useMutation({
+    mutationFn: fetchApi,
+    onSuccess: (data) => {
+      if ( data && "user" in data && "access_token" in data ) {
+        setAuthToken(`${data.token_type} ${data.access_token}`);
+        dispatch(authActions.setLoggedInData(data));
+        navigate("/");
+      }else{
+        console.warn("Login: Server response data error.");
+      }
+      queryClient.invalidateQueries({ refetchType: "none"});
+    }
+  });
 
   useEffect(() => {
     if(isLoggedIn){
@@ -86,22 +90,14 @@ export default function Login() {
         password: formState.password.value,
       };
 
-      loginRequest({ url: "login", method: 'post', params: loginData },(response) => {
-        if ( "user" in response && "access_token" in response ) {
-          const loggedInData = { user: {...response.user}, accessToken: `${response.token_type} ${response.access_token}`};
-          dispatch(authActions.setLoggedInData(loggedInData));
-          // authCtx.setLoggedInData(loggedInData);
-          navigate("/");
-        }else{
-          console.error('Server Response Data Error: ', response);
-        }
-      });
+      // Send login request using TanStack/ReactQuery.
+      mutate({ url: "login", body: loginData });
     }
   };
 
   return (
     <CardLayout title="Login">
-      <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} submitButtonText="Log In" isDisabled={!formState.isValid}>
+      <Reform onSubmit={submitHandler} alert={isError && {error: error.message}} isLoading={isPending} submitButtonText="Log In" isDisabled={!formState.isValid}>
         <Input
           id="loginEmail"
           label="Email"

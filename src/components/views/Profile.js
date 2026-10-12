@@ -1,12 +1,13 @@
 import { useReducer } from "react";
 import { useDispatch, useSelector } from "react-redux";
+import { useMutation } from "@tanstack/react-query";
 
 import { minPasswordLength, validateEMail } from "../../utilities/helper";
 // import AuthContext from "../../store/auth-context";
-import useApi from "../../hooks/use-api";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
 import { authActions } from "../../store/redux/auth";
+import fetchApi, { queryClient } from "../../utilities/fetch-api";
 
 const formReducer = (state, action) => {
   switch (action.type) {
@@ -83,9 +84,22 @@ const formReducer = (state, action) => {
 
 const Profile = (props) => {
   // const {authUser, profileUpdate} = useContext(AuthContext);
-  const authUser = useSelector(store => store.auth.authUser);
+  const { authUser } = useSelector(store => store.auth);
   const dispatch = useDispatch();
-  const {isLoading, alert, makeRequest: profileUpdateRequest, setAlert} = useApi();
+  const { mutate, isPending, isError, error, isSuccess } = useMutation({
+    mutationFn: fetchApi,
+    onSuccess: (data) => {
+      if (!data.error && "user" in data) {
+        // profileUpdate({ user: {...data.user}});
+        formDispatcher({ type: "RESET" });
+        dispatch(authActions.updateAuthUser(data));
+        // props.onClose();
+      } else {
+        console.warn(data);
+      }
+      queryClient.invalidateQueries({ refetchType: "none" });
+    }
+  });
   const defaultForm = {
     id: { value: authUser.id },
     email: { value: authUser.email },
@@ -135,22 +149,7 @@ const Profile = (props) => {
       };
 
       // Make BE API request to update profile data.
-      profileUpdateRequest({
-        method: 'post',
-        url: 'save_profile',
-        params: profileData
-
-      }, (response) => {
-        if (!response.error && response.hasOwnProperty("user")) {
-          // profileUpdate({ user: {...response.user}});
-          dispatch(authActions.updateAuthUser({ user: {...response.user}}));
-          formDispatcher({ type: "RESET" });
-          setAlert({success: "Profile updated successfully."});
-          // props.onClose();
-        } else {
-          console.warn(response);
-        }
-      });
+      mutate({ url: 'save_profile', body: profileData});
 
     }else{
       console.error('Invalid Form');
@@ -158,8 +157,10 @@ const Profile = (props) => {
     }
   }
 
+  const alert = {error: isError ? error.message : null, success: isSuccess ? "Profile updated successfully!!" : null};
+
   return (
-    <Reform onSubmit={submitHandler} alert={alert} isLoading={isLoading} submitButtonText="Update Profile" isDisabled={formState.isValid !== true}>
+    <Reform onSubmit={submitHandler} alert={alert} isLoading={isPending} submitButtonText="Update Profile" isDisabled={formState.isValid !== true}>
       <Input
         id="name"
         label="Name"
