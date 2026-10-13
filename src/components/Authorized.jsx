@@ -28,7 +28,7 @@ export default function Authorized() {
     // and get login again automatically with their last used authorization API key.
 
     if(data && "id" in data){
-      dispatch( authActions.setLoggedInData({user: data}) )
+      dispatch( authActions.setLoggedInData({user: {...data}}) )
     }
 
     if(!isLoading && !isLoggedIn){
