@@ -5,20 +5,15 @@ import { notificationActions } from "../store/redux/notification";
 
 const Notification = () => {
     const dispatch = useDispatch();
-    const props = useSelector((state) => state.notification);
-
-    if(props.message == null || props.message.length < 1){
-        return false;
-    }
+    const { show, type, title, message } = useSelector((state) => state.notification);
 
     return (
-        <ToastContainer className="p-3 position-absolute top-0 end-0 mx-auto text-white text-center">
-          <Toast show={props.show} bg={props.type !== 'error' ? 'success' : 'danger'} onClose={() => { dispatch(notificationActions.close())}} delay={3000} autohide >
-          {props.title && <Toast.Header>
-              <strong className="me-auto">{props.title}</strong>
-              {/* {props.titleSmall && <small className="text-muted">just now</small>} */}
-            </Toast.Header>}
-            <Toast.Body>{props.message}</Toast.Body>
+        <ToastContainer position="top-end" className="p-3 mx-auto text-white text-center">
+          <Toast show={show} bg={type !== 'error' ? 'success' : 'danger'} onClose={() => { dispatch(notificationActions.close())}} delay={3000} autohide >
+            <Toast.Header>
+              <strong className="me-auto">{title || "Success"}</strong>
+            </Toast.Header>
+            <Toast.Body>{message}</Toast.Body>
           </Toast>
         </ToastContainer>
     );

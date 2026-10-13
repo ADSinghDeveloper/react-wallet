@@ -31,3 +31,12 @@ body {
   --bs-toast-zindex: 1100;
   z-index: var(--bs-toast-zindex);
 }
+
+.show-password {
+  background: none;
+  border: none;
+  color: #7b7b7b;
+  position: absolute;
+  right: 0.3rem;
+  top: 0rem;
+}
