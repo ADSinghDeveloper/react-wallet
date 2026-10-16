@@ -18,9 +18,7 @@ const Dashboard = () => {
       <div>
         <Row lg={12}>
           {isLoading? <Loader /> : data?.map((color) => <Col key={color.code} lg={1} md={2} sm={2} xs={3}>
-          <div className="shadow rounded mb-4 py-4" style={{backgroundColor: `${color.code}`, color: `${color.code}`}}>
-            color
-          </div>
+          <div className="shadow rounded mb-4 py-4 px-4" style={{backgroundColor: `${color.code}`, color: `${color.code}`, aspectRatio: 1/1}} />
         </Col>)}
         </Row>
       </div>

@@ -17,7 +17,7 @@ export default function Authorized() {
   const { data, isLoading } = useQuery({
     queryKey: ["autoLogin"],
     queryFn: ({signal}) => fetchApi({ signal, url: "profile" }),
-    enabled: hasAuthToken(),
+    enabled: !isLoggedIn && hasAuthToken(),
     staleTime: 0, // how long the cached data would be stored or retained.
     gcTime: 0, // garbage collection time.
     retry: false, // Retry to API request.
