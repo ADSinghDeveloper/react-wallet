@@ -74,7 +74,8 @@ const Register = () => {
     isValid: false,
   });
 
-  // const authCtx = useContext(AuthContext);
+  // const { isLoggedIn, setLoggedInData } = use(AuthContext);
+  const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
   const dispatch = useDispatch();
   const [emailError, setEmailError] = useState(null);
   const { mutate, isPending, error } = useMutation({
@@ -82,8 +83,8 @@ const Register = () => {
     onSuccess: (data) => {
       if ( Object.hasOwn(data, "user") && "access_token" in data ) {
         setAuthToken(`${data.token_type} ${data.access_token}`);
+        // setLoggedInData(data);
         dispatch(authActions.setLoggedInData(data));
-        // authCtx.setLoggedInData(data);
         navigate("/");
       } else if ("email" in data) {
         setEmailError(data.email);
@@ -92,7 +93,6 @@ const Register = () => {
     }
   });
   const navigate = useNavigate();
-  const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
 
   useEffect(() => {
     if(isLoggedIn){

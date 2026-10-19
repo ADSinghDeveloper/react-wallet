@@ -83,15 +83,15 @@ const formReducer = (state, action) => {
 };
 
 const Profile = (props) => {
-  // const {authUser, profileUpdate} = useContext(AuthContext);
-  const { authUser } = useSelector(store => store.auth);
+  // const {authUser, updateAuthUser} = use(AuthContext);
+  const authUser = useSelector(store => store.auth.authUser);
   const dispatch = useDispatch();
   const { mutate, isPending, isError, error, isSuccess } = useMutation({
     mutationFn: fetchApi,
     onSuccess: (data) => {
       if (!data.error && "user" in data) {
-        // profileUpdate({ user: {...data.user}});
         formDispatcher({ type: "RESET" });
+        // updateAuthUser(data);
         dispatch(authActions.updateAuthUser(data));
         // props.onClose();
       } else {

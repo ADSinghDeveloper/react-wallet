@@ -1,18 +1,15 @@
-import React from "react";
 import { Modal } from "react-bootstrap";
 
-const MsgModal = (props) => {
+export default function ModalBox({ show, title, footer, onClose, children}) {
   return (
-    <Modal show={props.show} onHide={props.onClose} centered>
-      <Modal.Header closeButton className={`shadow mb-3 text-primary ${props.class}`}>
-        <Modal.Title>{props.title}</Modal.Title>
+    <Modal show={show} onHide={onClose} centered>
+      <Modal.Header closeButton className="shadow mb-3 text-primary">
+        <Modal.Title>{title}</Modal.Title>
       </Modal.Header>
       <Modal.Body className="mb-3">
-        {props.children}
+        {children}
       </Modal.Body>
-      {/* <Modal.Footer></Modal.Footer> */}
+      {footer && <Modal.Footer>{footer}</Modal.Footer>}
     </Modal>
   );
 }
-
-export default MsgModal;

@@ -3,6 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { Outlet, useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
 
+// import AuthContext from "../store/auth-context";
 import Layout from "./layout/Layout";
 import Loader from "./Loader";
 import { authActions } from "../store/redux/auth";
@@ -11,9 +12,10 @@ import fetchApi, { hasAuthToken, setAuthTokenToApiHeader } from "../utilities/fe
 setAuthTokenToApiHeader();
 
 export default function Authorized() {
+  // const { isLoggedIn, setLoggedInData } = use(AuthContext);
   const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
-  const navigate = useNavigate();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const { data, isLoading } = useQuery({
     queryKey: ["autoLogin"],
     queryFn: ({signal}) => fetchApi({ signal, url: "profile" }),
@@ -28,6 +30,7 @@ export default function Authorized() {
     // and get login again automatically with their last used authorization API key.
 
     if(data && "id" in data){
+      // setLoggedInData({user: {...data}});
       dispatch( authActions.setLoggedInData({user: {...data}}) )
     }
 

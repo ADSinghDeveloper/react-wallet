@@ -8,6 +8,7 @@ import { minPasswordLength, validateEMail} from "../../utilities/helper";
 import CardLayout from "../layout/CardLayout";
 import Reform from "../form/Reform";
 import Input from "../form/Input";
+// import AuthContext from "../../store/auth-context";
 import { authActions } from "../../store/redux/auth";
 import fetchApi, { queryClient, setAuthToken } from "../../utilities/fetch-api";
 
@@ -40,15 +41,17 @@ export default function Login() {
     password: { value: "", isValid: null },
     isValid: false,
   });
+  // const { isLoggedIn, setLoggedInData } = useContext(AuthContext);
+  const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
   const { mutate, isError, error, isPending } = useMutation({
     mutationFn: fetchApi,
     onSuccess: (data) => {
       if ( data && "user" in data && "access_token" in data ) {
         setAuthToken(`${data.token_type} ${data.access_token}`);
         dispatch(authActions.setLoggedInData(data));
+        // setLoggedInData(data)
         navigate("/");
       }else{
         console.warn("Login: Server response data error.");

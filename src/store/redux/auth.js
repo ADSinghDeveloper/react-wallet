@@ -12,7 +12,7 @@ const authSlice = createSlice({
   reducers: {
     setLoggedInData: (state, action) => {
       // We can immutate state object here in redux toolkit because it handles immutated object internally.
-      state.isLoggedIn = true;
+      state.isLoggedIn = !!action.payload.user;
       state.authUser = {...action.payload.user};
       state.isRootUser = action.payload.user.id === 1;
     },

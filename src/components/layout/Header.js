@@ -5,7 +5,7 @@ import { NavLink, useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 
 // import AuthContext from "../../store/auth-context";
-import Modal from "../Modal";
+import ModalBox from "../Modal";
 import Profile from "../views/Profile";
 import { authActions } from "../../store/redux/auth";
 import Loader from "../Loader";
@@ -15,14 +15,15 @@ import { notificationActions } from "../../store/redux/notification";
 
 const Header = () => {
   // const { logout, authUser } = use(AuthContext);
+  const authUser = useSelector(store => store.auth.authUser);
   const dispatch = useDispatch();
-  const { authUser } = useSelector(store => store.auth);
   const [showProfile, setShowProfile] = useState(false);
   const navigate = useNavigate();
   const { mutate, isPending } = useMutation({
     mutationFn: fetchApi,
     onSuccess: (data) => {
       setAuthToken(null);
+      // logout();
       dispatch(authActions.logout());
       dispatch(notificationActions.send({ type: "success", title: "Logout", message: data?.success || "Logged-out successfully!"}));
       // queryClient.invalidateQueries({ refetchType: "none"});
@@ -78,14 +79,14 @@ const Header = () => {
           </Navbar.Collapse>
         </Container>
       </Navbar>
-      {showProfile && <Modal
+      {showProfile && <ModalBox
         show={showProfile}
         onClose={() => setShowProfile(false)}
         title="Profile"
       >
         <Profile onClose={() => setShowProfile(false)} />
-      </Modal>}
-      {isPending && <Modal show={isPending} title="Logging Out"><Loader /></Modal>}
+      </ModalBox>}
+      {isPending && <ModalBox show={isPending} title="Logging Out"><Loader /></ModalBox>}
     </>
   );
 };

@@ -16,7 +16,7 @@ function authReducer(state,action){
   if(action.type === "LOGIN"){
     state = {
       ...state,
-      isLoggedIn: true,
+      isLoggedIn: !!action.payload.user,
       authUser: {...action.payload.user},
     }
   }
@@ -45,7 +45,7 @@ export function AuthContextProvider ({children}) {
         payload: loginData,
       });
     },
-    profileUpdate: (profileData) => {
+    updateAuthUser: (profileData) => {
       dispatchAuthStateAction({
         type: "UPDATE",
         payload: profileData,

@@ -1,9 +1,12 @@
+// import { use } from "react";
 import { Row, Container, Col } from "react-bootstrap";
 import Header from "./Header";
+// import AuthContext from "../../store/auth-context";
 import { useSelector } from "react-redux";
 import Notification from "../Notification";
 
 const Layout = ({children}) => {
+  // const { isLoggedIn } = use(AuthContext);
   const isLoggedIn = useSelector(store => store.auth.isLoggedIn);
 
   return (
