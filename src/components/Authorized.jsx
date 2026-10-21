@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Outlet, useNavigate } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router";
 import { useQuery } from "@tanstack/react-query";
 
 // import AuthContext from "../store/auth-context";

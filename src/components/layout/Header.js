@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { Container, Navbar, Nav, NavLink as NavbarLink } from "react-bootstrap";
 import { BoxArrowRight, PersonCircle } from "react-bootstrap-icons";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 
 // import AuthContext from "../../store/auth-context";

@@ -1,6 +1,6 @@
 import { useEffect, useReducer, useState } from "react";
 import { Card } from "react-bootstrap";
-import { NavLink, useNavigate } from "react-router-dom";
+import { NavLink, useNavigate } from "react-router";
 import { useDispatch, useSelector } from "react-redux";
 import { useMutation } from "@tanstack/react-query";
 

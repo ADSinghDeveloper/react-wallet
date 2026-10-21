@@ -1,6 +1,5 @@
-import { useLoaderData, useParams } from "react-router-dom";
+import { useLoaderData, useParams, Link } from "react-router";
 import CardLayout from "../layout/CardLayout";
-import { Link } from "react-router-dom";
 
 export default function AccountDetails() {
   const routeParams = useParams();
