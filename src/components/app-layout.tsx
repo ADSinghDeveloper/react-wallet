@@ -17,6 +17,7 @@ import {
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { TooltipProvider } from "@/components/ui/tooltip";
+import { ToggleThemeMode } from "./toggle-theme-mode";
 
 interface AppLayoutProps {
   children: React.ReactNode;
@@ -44,6 +45,7 @@ export function AppLayout({ children }: AppLayoutProps) {
 
               {/* User Profile Action Menu */}
               <div className="flex items-center gap-4">
+                <ToggleThemeMode />
                 <DropdownMenu>
                   <DropdownMenuTrigger className="relative h-8 w-8 rounded-full" render={<Button variant="outline" />}>
                       <Avatar className="h-8 w-8">
