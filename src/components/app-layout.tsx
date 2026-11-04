@@ -8,6 +8,7 @@ import {
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -44,12 +45,7 @@ export function AppLayout({ children }: AppLayoutProps) {
               {/* User Profile Action Menu */}
               <div className="flex items-center gap-4">
                 <DropdownMenu>
-                  <DropdownMenuTrigger>
-                    <Button
-                      type="button"
-                      variant="ghost"
-                      className="relative h-8 w-8 rounded-full"
-                    >
+                  <DropdownMenuTrigger className="relative h-8 w-8 rounded-full" render={<Button variant="outline" />}>
                       <Avatar className="h-8 w-8">
                         <AvatarImage
                           src="https://github.com"
@@ -57,9 +53,9 @@ export function AppLayout({ children }: AppLayoutProps) {
                         />
                         <AvatarFallback>CN</AvatarFallback>
                       </Avatar>
-                    </Button>
                   </DropdownMenuTrigger>
                   <DropdownMenuContent className="w-56" align="end">
+                    <DropdownMenuGroup>
                     <DropdownMenuLabel className="font-normal">
                       <div className="flex flex-col space-y-1">
                         <p className="text-sm font-medium leading-none">
@@ -77,6 +73,7 @@ export function AppLayout({ children }: AppLayoutProps) {
                     <DropdownMenuItem className="text-destructive focus:bg-destructive/10 focus:text-destructive">
                       Log out
                     </DropdownMenuItem>
+                    </DropdownMenuGroup>
                   </DropdownMenuContent>
                 </DropdownMenu>
               </div>
